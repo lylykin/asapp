@@ -1,6 +1,8 @@
 import json 
 from xml.dom import minidom
 
+from svg_path import convert_path
+
 
 file2kanji = {}
 
@@ -24,7 +26,8 @@ def parse_kanji(kanji_file: str):
     doc.unlink()
     
     for path in path_strings:
-        print(path)
+        #print(path)
+        convert_path(path)
         # do something with the path string
         # e.g. save it to a file or process it further
 
@@ -37,6 +40,10 @@ with open("./data/kvg-index.json") as f:
     f.close() 
 
 
+length = len(d.keys())
+
+i = 0
 for kanjis in d.keys():
-    print(f"adding kanji: {kanjis} with file: {d[kanjis][-1]}")
+    print(f"adding kanji: {kanjis} with file: {d[kanjis][-1]} ({i}/{length})")
     parse_kanji(d[kanjis][-1])
+    i += 1
