@@ -21,7 +21,11 @@ class Kanji:
         self.strokes.append(stroke)
         self.stroke_count = len(self.strokes)
 
-
+    def point_count(self):
+        count = 0
+        for stroke in self.strokes:
+            count += len(stroke.points)
+        return count
 
 
 def parse_kanji(chr: str, kanji_file: str) -> Kanji:
@@ -41,20 +45,38 @@ def parse_kanji(chr: str, kanji_file: str) -> Kanji:
 
 
 
-with open("./data/kvg-index.json") as f:
-    d = json.load(f)
+# compute from svg list to precomputed_json 
+def compute_data():
+
+    with open("./data/kvg-index.json") as f:
+        d = json.load(f)
     
-    f.close() 
+        f.close() 
+    
+    i = 0
+
+    length = len(d.keys())
+    for kanjis in d.keys():
+        print(f"adding kanji: {kanjis} with file: {d[kanjis][-1]} ({i}/{length})")
+    
+        kanji_db[kanjis] = parse_kanji(kanjis, d[kanjis][-1])
+        i += 1
 
 
-length = len(d.keys())
+    with open("./data/kanji_db.json", "w") as f:
+        json.dump(kanji_db, f, default=lambda o: o.__dict__, indent=0, ensure_ascii=False)
+        f.close()
+    print("done")
 
 
+# load points data from precomputed_json
+def load_data():
+    kanji_db = {}
+    with open("./data/kanji_db.json", "r") as f:
+        kanji_db = json.load(f)
+        f.close()
+    
+    print("done")
 
-
-i = 0
-for kanjis in d.keys():
-    print(f"adding kanji: {kanjis} with file: {d[kanjis][-1]} ({i}/{length})")
-    kanji_db[kanjis] = parse_kanji(kanjis, d[kanjis][-1])
-
-    i += 1
+    return kanji_db
+kanji_db = load_data()
