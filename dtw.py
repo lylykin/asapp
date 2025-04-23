@@ -28,21 +28,33 @@ class Dtw :
                 for j in range(len(self.refserie))]
 
         self.cm = mat
-        
-
-    def AccCostMatrix(self, i = len(self.cm), j = len(self.cm[0]) ) :#cm est une matrice d'entiers *
+    
+    def AccCostMatrix(self, i, j): 
         """
         returns the accumulation cost matrix.
+        """        
+        #matrice initialization to make my life easier
+        init_mat = [[_ for _ in range(j)]
+                    for k in range(i)]
+               
+        #i'm still not sure if those matrix should be attributes or not, but we can stock them in one objet if done this way ig
+        self.acm = self._AccCostMatrix(self,len(self.cm), len(self.cm[0]), init_mat)  
+
+    def _AccCostMatrix(self, i, j, c_mat) : #might have a high cost, we'll see if that's an issue or not
         """
-        
+        private function to remove an issue with the recursive function below
+        """
+        #we set the distance to the 1st point as infinite
         if i ==0 or j==0 : 
-            return math.inf
+            return math.inf 
         
+        #the distance here iis the same as the euclidian distance
         if i ==1 and j == 1:
             return self.cm[i][j]
         
+        #the disnace here is the euclidian distance with the smallest distance from its neighbours in the C matrix
         else :
-            pass
+            c_mat[i][j] = self.cm[i][j] + min(c_mat[i-1][j], c_mat[i][j-1], c_mat[i-1][j-1])
         
         
         
