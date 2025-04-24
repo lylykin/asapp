@@ -16,18 +16,27 @@ class Dtw :
     def __str__(self):
         return f'{self.acm}'
     
+    def EuclidianDist(self, val_1 : tuple, val_2 : tuple) : 
+        """
+        Computes the euclidian distance between 2 points of a 2-d serie
+        """
+        
+        euclidian_dist = lambda x,y : (abs(x-y))
+        return euclidian_dist(x=val_1[0]-val_2[0], y = val_1[1]-val_2[1])
+        
+    
     def CostMatrix(self) : 
         """
         return a matrix of distance : we'll have the distances of every points of the two series
         """
         
         #computes the euclidian distance
-        euclidian_dist = lambda x,y : (abs(x-y))
+
         
         #creating the cost matrix
-        mat = [[euclidian_dist (x=self.compserie[i], y=self.refserie[j])
-                for i in range(len(self.compserie))]
-                for j in range(len(self.refserie))]
+        mat = [[self.EuclidianDist(v1, v2)
+                for v1 in self.compserie]
+                for v2 in self.refserie]
 
         self.cm = mat
     
@@ -63,7 +72,7 @@ class Dtw :
     def dtw(self): 
         return self.acm[-1][-1]
         
-d = Dtw([1,3,4],[1,2,4])
+d = Dtw([(1,0),(3,2),(4,4)],[(0,1),(2,4),(4,4)])
 d.CostMatrix()
 d.AccCostMatrix()
 print(d)
