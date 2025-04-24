@@ -22,7 +22,7 @@ class Dtw :
         """
         
         #computes the euclidian distance
-        euclidian_dist = lambda x,y : (abs(x-y))**2  
+        euclidian_dist = lambda x,y : (abs(x-y))
         
         #creating the cost matrix
         mat = [[euclidian_dist (x=self.compserie[i], y=self.refserie[j])
@@ -31,37 +31,37 @@ class Dtw :
 
         self.cm = mat
     
-    def AccCostMatrix(self,): 
+    def AccCostMatrix(self): 
         """
         returns the accumulation cost matrix.
         """ 
-        i = len(self.cm)
-        j = len(self.cm[0])
+        n = len(self.cm)
+        m = len(self.cm[0])
         
-        #matrice initialization to make my life easier
-        init_mat = [[_ for _ in range(j)]
-                    for k in range(i)]
-               
-        #i'm still not sure if those matrix should be attributes or not, but we can stock them in one objet if done this way ig
-        self.acm = self._AccCostMatrix(i-1, j-1, init_mat)  
+        #building the acm matrix
+        c_mat = [[self.CoefAccCostMatrix(i, j) for j in range(m)]
+                for i in range(n)]
+                
+                
+        self.acm = c_mat
 
-    def _AccCostMatrix(self, i, j, c_mat) : #might have a high cost, we'll see if that's an issue or not
-        """
-        private function to remove an issue with the recursive function below
-        """
+
+    def CoefAccCostMatrix(self, i, j) : #might have a high cost, we'll see if that's an issue or not
         #we set the distance to the 1st point as infinite
-        if i ==0 or j==0 : 
-            return math.inf 
         
         #the distance here iis tshe same as the euclidian distance
-        if i ==1 and j == 1:
+        if i ==0 and j == 0:
             return self.cm[i][j]
+        
+        elif i == 0 or j == 0:
+            return math.inf
         
         #the disnace here is the euclidian distance with the smallest distance from its neighbours in the C matrix
         else :
-            c_mat[i][j] = self.cm[i][j] + min(self._AccCostMatrix(i-1, j, c_mat), self._AccCostMatrix(i, j-1, c_mat), self._AccCostMatrix(i-1, j-1, c_mat))
-        
-        
+            return self.cm[i][j] + min(self.CoefAccCostMatrix(i-1, j), self.CoefAccCostMatrix(i, j-1), self.CoefAccCostMatrix(i-1, j-1))
+
+    def dtw(self): 
+        return self.acm[-1][-1]
         
 d = Dtw([1,3,4],[1,2,4])
 d.CostMatrix()
