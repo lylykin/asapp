@@ -1,4 +1,5 @@
-from loader import compute_data
+from loader import compute_kanji_cache
+from matplotlib import pyplot as plt
 import sys
 
 
@@ -11,4 +12,20 @@ if len(sys.argv) < 2:
 
 if sys.argv[1] == "compute":
 
-    compute_data(   )
+    compute_kanji_cache(   )
+elif sys.argv[1] == "display":
+    # Display the kanji data
+    from kanji import KanjiDB
+    from svg_path import convert_path_from_dstring, Path
+
+    kanji_db = KanjiDB.the()._kanji_db
+    kanji = kanji_db["日"]
+    print(kanji.name)
+    print(kanji.stroke_count)
+    print(kanji.point_count())
+    
+    for stroke in kanji.strokes:
+        plt.plot(*zip(*stroke.points))
+    
+    plt.show()
+    

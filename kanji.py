@@ -5,9 +5,10 @@ class Kanji:
     stroke_count: int
     stokes: list[Path]
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, stroke_count: int = 0, strokes: list[Path] = []):
         self.name = name 
-        self.strokes = []
+        self.strokes = strokes
+        self.stroke_count = stroke_count
     
     def add_stroke(self, stroke: Path):
         self.strokes.append(stroke)
@@ -34,11 +35,23 @@ class KanjiDB(object):
                 
     def _update_stroke_db(self):
         for v in self._kanji_db.values():
+            print(v)
             l = self._kanji_stroke_db.get(v.stroke_count, [])
             l.append(v)
 
     def update_kanji_db(self, new_kanji_db):
-        self._kanji_db = new_kanji_db
+        for k, v in new_kanji_db.items():
+            if k not in self._kanji_db:
+                strokes = []
+                for stroke in v["strokes"]:
+                    strokes.append(Path())
+                    for point in stroke["points"]:
+                        strokes[-1].append(point)
+                
+                self._kanji_db[k] = Kanji(v["name"], v["stroke_count"], strokes=strokes)
+            else:
+                raise ValueError(f"Kanji {k} already exists in database")
+
         self._update_stroke_db()
 
     def kanji_from_char(self, chr: str) -> Kanji:
