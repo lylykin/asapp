@@ -1,11 +1,11 @@
 import customtkinter as ctk
-import time
+from PIL import Image
 
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Asapp")
-        self.geometry("600x500")
+        self.geometry("600x600")
         self.widget_placement()
         self.widget_interact()
 
@@ -17,7 +17,11 @@ class App(ctk.CTk):
         Définis les différents widget à placer dans la fenêtre
         '''
         self.main_canvas = ctk.CTkCanvas(width=800, height=800, bg="white")
-        self.main_canvas.grid(row=0,column=0)
+        self.logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(30, 30))
+        # (light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
+
+        self.logo.grid(row=0,column=0)
+        self.main_canvas.grid(row=1,column=1)
 
     def widget_interact(self):
         '''
@@ -45,10 +49,9 @@ class App(ctk.CTk):
         x = event.x
         y = event.y
         cursor_pos = (x, y) # Récupère les coordonnées de la souris (relativement au 0,0 du canvas)
-        self.strokes[self.n_strokes].append(cursor_pos) # Ajoute les coorodnnées à la liste de points courante
+        self.strokes[self.n_strokes].append(cursor_pos) # Ajoute les coordonnées à la liste de points courante
         self.main_canvas.create_oval(x-1, y-1, x+1, y+1, fill='black', width=4) # Affichage du point
         print(f"pos : {cursor_pos}, n_strokes : {self.n_strokes}") # DEBUG
-        #time.sleep(100) # Essai de mettre du délai pour éviter d'avoir trop de données : CAUSE UN BUG, PAS CAPTE PK
 
 
 asapp = App()
