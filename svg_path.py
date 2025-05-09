@@ -21,7 +21,7 @@ class Path:
 def convert_path_from_dstring(path_def, quality=5) -> Path:
     path = parse_path(path_def)
     res = Path()
-    for l in range(quality):
+    for l in range(quality+1):
         rel_point = path.point(l / quality)
         res.append((rel_point.real, rel_point.imag))
     return res

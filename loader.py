@@ -6,7 +6,7 @@ from svg_path import convert_path_from_dstring, Path
 from kanji import Kanji, KanjiDB
 
 def parse_kanji(chr: str, kanji_file: str) -> Kanji:
-    kanji = Kanji(chr)
+    kanji = Kanji(chr, 0, [])
     
     # parse the dstring path
     doc = minidom.parse(f'data/kanji/{kanji_file}') 
@@ -33,6 +33,7 @@ def compute_kanji_cache():
 
     length = len(d.keys())
     for kanjis in d.keys():
+
         print(f"adding kanji: {kanjis} with file: {d[kanjis][-1]} ({i}/{length})")
     
         kanji_db[kanjis] = parse_kanji(kanjis, d[kanjis][-1])
@@ -49,11 +50,15 @@ def load_kanji_cache():
     print("loading cached kanji_db.json")
 
     kanji_db = {}
-    with open("./data/kanji_db.json", "r") as f:
-        kanji_db = json.load(f)
-        f.close()
+    try :
+        with open("./data/kanji_db.json", "r") as f:
+            kanji_db = json.load(f)
+            f.close()
     
-    print("done")
+        print("done")
+    except :
+        print("kanji_db.json not found, please compute kanji cache")
+
     return kanji_db
 
 
