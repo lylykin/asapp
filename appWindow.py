@@ -17,10 +17,11 @@ class App(ctk.CTk):
         Définis les différents widget à placer dans la fenêtre
         '''
         self.main_canvas = ctk.CTkCanvas(width=800, height=800, bg="white")
-        self.logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(30, 30))
+        logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(30, 30))
         # (light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
+        self.logo_label = ctk.CTkLabel(self, image=logo, text="App Logo")  # display image with a CTkLabel
 
-        self.logo.grid(row=0,column=0)
+        self.logo_label.grid(row=0,column=0)
         self.main_canvas.grid(row=1,column=1)
 
     def widget_interact(self):
