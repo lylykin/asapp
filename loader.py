@@ -50,15 +50,12 @@ def load_kanji_cache():
     print("loading cached kanji_db.json")
 
     kanji_db = {}
-    try :
-        with open("./data/kanji_db.json", "r") as f:
-            kanji_db = json.load(f)
-            f.close()
+    with open("./data/kanji_db.json", "r", encoding="utf-8") as f:
+        kanji_db = json.load(f)
+        f.close()
     
         print("done")
-    except :
-        print("kanji_db.json not found, please compute kanji cache")
-
+    
     return kanji_db
 
 
