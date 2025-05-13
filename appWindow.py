@@ -9,6 +9,8 @@ class App(ctk.CTk):
         self.widget_placement()
         self.widget_interact()
 
+        self.main_color = "dark_orange"
+        self.second_color = "orange"
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
         
@@ -17,9 +19,10 @@ class App(ctk.CTk):
         Définis les différents widget à placer dans la fenêtre
         '''
         self.main_canvas = ctk.CTkCanvas(width=800, height=800, bg="white")
-        logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(30, 30))
-        # (light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
+        logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(50, 50))
+        # ctk.CTkImage(light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
         self.logo_label = ctk.CTkLabel(self, image=logo, text="App Logo")  # display image with a CTkLabel
+        self.compare_button = ctk.CTkButton(self, corner_radius=2, bg_color=self.second_color, )
 
         self.logo_label.grid(row=0,column=0)
         self.main_canvas.grid(row=1,column=1)
