@@ -6,11 +6,9 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Asapp")
-        self.geometry("600x600")
+        self.geometry("650x420")
         ctk.set_default_color_theme("assets/asapp_theme.json") # Mets un thème custom pour les widget par défaut
 
-        self.main_color = "#D76400"
-        self.second_color = "#A0522D" # Définitions de couleurs à retirer si on utilise le theme.json
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
         
@@ -23,6 +21,7 @@ class App(ctk.CTk):
         '''
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(self) # Stocke le canvas
+        self.kanji_found_frame = ctk.CTkFrame(self) # Stocke les kanji et kana proposés par l'app
         self.main_canvas = ctk.CTkCanvas(self.canvas_frame, bg="white", borderwidth=3, cursor="tcross") 
         logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(50, 50))
         # ctk.CTkImage(light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
@@ -34,6 +33,7 @@ class App(ctk.CTk):
         # Position des widgets dans l'app
         self.logo_label.grid(row=0,column=0)
         self.canvas_frame.grid(row=1,column=1, sticky="nsew")
+        self.kanji_found_frame.grid(row=1,column=2, sticky="nsew")
         self.exit_button.grid(row=2,column=0, sticky="s")
 
         # Position des widget dans la canvas_frame
