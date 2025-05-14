@@ -4,10 +4,10 @@ from colour import Color
 
 class App(ctk.CTk):
     def __init__(self):
+        ctk.set_default_color_theme("assets/asapp_theme.json") # Mets un thème custom pour les widget par défaut
         super().__init__()
         self.title("Asapp")
         self.geometry("650x420")
-        ctk.set_default_color_theme("assets/asapp_theme.json") # Mets un thème custom pour les widget par défaut
 
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
@@ -19,9 +19,12 @@ class App(ctk.CTk):
         '''
         Définis les différents widget à placer dans la fenêtre
         '''
+        # Définitions des variables
+        self.appearence = ctk.StringVar(value="dark")
+
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(self) # Stocke le canvas
-        self.kanji_found_frame = ctk.CTkFrame(self) # Stocke les kanji et kana proposés par l'app
+        self.kanji_found_frame = ctk.CTkScrollableFrame(self) # Stocke les kanji et kana proposés par l'app
         self.main_canvas = ctk.CTkCanvas(self.canvas_frame, bg="white", borderwidth=3, cursor="tcross") 
         logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(50, 50))
         # ctk.CTkImage(light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
@@ -29,12 +32,17 @@ class App(ctk.CTk):
         self.compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Comparer le caractère")
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
         self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter")
+        self.appearence_switch = ctk.CTkSwitch(self, textvariable=self.appearence, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearence)
+
+        # Définition de l'état des widgets par défaut
+        self.appearence_switch.select()
 
         # Position des widgets dans l'app
         self.logo_label.grid(row=0,column=0)
         self.canvas_frame.grid(row=1,column=1, sticky="nsew")
-        self.kanji_found_frame.grid(row=1,column=2, sticky="nsew")
-        self.exit_button.grid(row=2,column=0, sticky="s")
+        self.kanji_found_frame.grid(row=1,column=3, sticky="nsew")
+        self.exit_button.grid(row=3,column=0, sticky="s")
+        self.appearence_switch.grid(row=2, column=0, sticky="s")
 
         # Position des widget dans la canvas_frame
         self.main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
@@ -89,6 +97,14 @@ class App(ctk.CTk):
         '''
         self.main_canvas.delete("user_stroke_dot")
         self.strokes = {} 
+    
+    def switch_appearence(self):
+        '''
+        Change l'apparence actuelle de l'appli selon la valeur du toggle (light ou dark), se référer à asapp_theme.json
+        '''
+        appearance_theme = self.appearence.get()
+        ctk.set_appearance_mode(appearance_theme)
+        print(f"Apparence changée en {appearance_theme}")
 
 asapp = App()
 asapp.mainloop()
