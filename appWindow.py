@@ -105,7 +105,3 @@ class App(ctk.CTk):
         appearance_theme = self.appearence.get()
         ctk.set_appearance_mode(appearance_theme)
         print(f"Apparence changée en {appearance_theme}")
-
-asapp = App()
-asapp.mainloop()
-

@@ -7,13 +7,14 @@ import json
 #On compare par rapport à la database kanji_db, donc besion d'un loader
 #pour comparer un stroke, DTW.
 
-with open('.\data\kanji_db.json') as f : 
+#with open('.\data\kanji_db.json') as f : 
     #bon apparamment loader le fait, mais on verra avec cyp
-    kanji_file = json.__loader__(f)
+    #kanji_file = json.__loader__(f)
     
     
 
 def kanjiIdenfier(kanji_2_id : Kanji, kanji_file):
+    # kanji_file should probably default to KanjiDB.the()
     #ta mère est tellement fat qu'il faut opti le dtw. Sinon voir si l'id_kanji est un kanji ou si j'en fais un Kanji pour faciliter
     for kan in kanji_file : 
         if isStrokeNumberSame(kanji_2_id, kan) :
@@ -29,4 +30,4 @@ def isStrokeNumberSame(id_kanji : Kanji, test_kanji : Kanji) :
     return test_kanji.stroke_count == id_kanji.stroke_count
 
 def isSameStroke(id_kanji, test_kanji) : 
-        
+    pass
