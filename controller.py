@@ -8,3 +8,8 @@ from identifier import *
 class Controller :
     app : App
     db : KanjiDB
+
+    def __init__(self, app : App, db : KanjiDB = KanjiDB.the()):
+        self.app = app
+        self.db = db
+        

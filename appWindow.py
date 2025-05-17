@@ -72,7 +72,7 @@ class App(ctk.CTk):
         Permet d'observer le résultat du stockage des points du tracé
         ! temporaire !
         '''
-        print(self.strokes[self.n_strokes])
+        print(self.strokes[self.n_strokes],len(self.strokes[self.n_strokes]))
 
     def canvas_draw_stroke(self, event):
         '''
