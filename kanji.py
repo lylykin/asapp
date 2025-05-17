@@ -3,7 +3,7 @@ from svg_path import convert_path_from_dstring, Path
 class Kanji: 
     name: str
     stroke_count: int
-    stokes: list[Path]
+    strokes: list[Path]
 
     def __init__(self, name: str, stroke_count: int = 0, strokes: list[Path] = []):
         self.name = name 

@@ -20,7 +20,7 @@ class App(ctk.CTk):
         Définis les différents widget à placer dans la fenêtre
         '''
         # Définitions des variables
-        self.appearence = ctk.StringVar(value="dark")
+        self.appearance = ctk.StringVar(value="dark")
 
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(self) # Stocke le canvas
@@ -32,17 +32,17 @@ class App(ctk.CTk):
         self.compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Comparer le caractère")
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
         self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter")
-        self.appearence_switch = ctk.CTkSwitch(self, textvariable=self.appearence, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearence)
+        self.appearance_switch = ctk.CTkSwitch(self, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearance)
 
         # Définition de l'état des widgets par défaut
-        self.appearence_switch.select()
+        self.appearance_switch.select()
 
         # Position des widgets dans l'app
         self.logo_label.grid(row=0,column=0)
         self.canvas_frame.grid(row=1,column=1, sticky="nsew")
         self.kanji_found_frame.grid(row=1,column=3, sticky="nsew")
         self.exit_button.grid(row=3,column=0, sticky="s")
-        self.appearence_switch.grid(row=2, column=0, sticky="s")
+        self.appearance_switch.grid(row=2, column=0, sticky="s")
 
         # Position des widget dans la canvas_frame
         self.main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
@@ -98,10 +98,10 @@ class App(ctk.CTk):
         self.main_canvas.delete("user_stroke_dot")
         self.strokes = {} 
     
-    def switch_appearence(self):
+    def switch_appearance(self):
         '''
         Change l'apparence actuelle de l'appli selon la valeur du toggle (light ou dark), se référer à asapp_theme.json
         '''
-        appearance_theme = self.appearence.get()
+        appearance_theme = self.appearance.get()
         ctk.set_appearance_mode(appearance_theme)
         print(f"Apparence changée en {appearance_theme}")

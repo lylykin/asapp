@@ -3,8 +3,8 @@ import math
 class Dtw : 
     """
     applies the Dynamic Time Warping algorithm
-    refserie : eference serie we want to compare to
-    compserie : serie we want to compare the refercence serie with
+    refserie : reference serie we want to compare to
+    compserie : serie we want to compare the reference serie with
     cm : costmatrix
     """
     
@@ -27,7 +27,7 @@ class Dtw :
     
     def CostMatrix(self) : 
         """
-        return a matrix of distance : we'll have the distances of every points of the two series
+        return a matrix of distance : we'll have the distances of every point of the two series
         """
         
         #computes the euclidian distance
@@ -58,14 +58,14 @@ class Dtw :
     def CoefAccCostMatrix(self, i, j) : #might have a high cost, we'll see if that's an issue or not
         #we set the distance to the 1st point as infinite
         
-        #the distance here iis tshe same as the euclidian distance
+        #the distance here is the same as the euclidian distance
         if i ==0 and j == 0:
             return self.cm[i][j]
         
         elif i == 0 or j == 0:
             return math.inf
         
-        #the disnace here is the euclidian distance with the smallest distance from its neighbours in the C matrix
+        #the distance here is the euclidian distance with the smallest distance from its neighbours in the C matrix
         else :
             return self.cm[i][j] + min(self.CoefAccCostMatrix(i-1, j), self.CoefAccCostMatrix(i, j-1), self.CoefAccCostMatrix(i-1, j-1))
 

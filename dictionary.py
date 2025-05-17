@@ -6,7 +6,7 @@ with open('\data\kvg-index.json') as f :
     dict_index = json.load(f)
 """
 
-class Dictionnary : 
+class Dictionary : 
 
 #je considère que le dictionnaire fait francais/ japonais
     

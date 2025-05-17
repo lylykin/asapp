@@ -13,7 +13,7 @@ import json
     
     
 
-def kanjiIdenfier(kanji_2_id : Kanji, kanji_file):
+def kanjiIdentifier(kanji_2_id : Kanji, kanji_file):
     # kanji_file should probably default to KanjiDB.the()
     #ta mère est tellement fat qu'il faut opti le dtw. Sinon voir si l'id_kanji est un kanji ou si j'en fais un Kanji pour faciliter
     for kan in kanji_file : 

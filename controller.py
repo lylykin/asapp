@@ -1,6 +1,6 @@
 from kanji import Kanji, KanjiDB
 from dtw import Dtw
-from dictionary import Dictionnary
+from dictionary import Dictionary
 from appWindow import App
 from svg_path import Path
 from identifier import *
@@ -23,5 +23,5 @@ class Controller :
             p_stroke = Path()
             p_stroke.points = s
             kanji_2_id.add_stroke(p_stroke)
-        kanji_matches = kanjiIdenfier(kanji_2_id,self.db)
+        kanji_matches = kanjiIdentifier(kanji_2_id,self.db)
         
