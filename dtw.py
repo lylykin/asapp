@@ -69,7 +69,9 @@ class Dtw :
         else :
             return self.cm[i][j] + min(self.CoefAccCostMatrix(i-1, j), self.CoefAccCostMatrix(i, j-1), self.CoefAccCostMatrix(i-1, j-1))
 
-    def dtw(self): 
+    def dtw(self):
+        self.CostMatrix()
+        self.AccCostMatrix()         
         return self.acm[-1][-1]
         
 d = Dtw([(1,0),(3,2),(4,4)],[(0,1),(2,4),(4,4)])
