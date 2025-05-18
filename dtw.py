@@ -73,8 +73,8 @@ class Dtw :
         self.CostMatrix()
         self.AccCostMatrix()         
         return self.acm[-1][-1]
-        
+"""        
 d = Dtw([(1,0),(3,2),(4,4)],[(0,1),(2,4),(4,4)])
 d.CostMatrix()
 d.AccCostMatrix()
-print(d)
+print(d)""" 

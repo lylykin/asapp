@@ -13,7 +13,7 @@ if len(sys.argv) < 2:
     print("Usage: python main.py <command>")
     print("Commands:")
     print("  compute: Compute cache data from kanji files (may take a while), already computed")
-    sys.exit(1)    
+    sys.exit(0)    
 
 if sys.argv[1] == "compute":
 

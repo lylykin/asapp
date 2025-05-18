@@ -1,6 +1,5 @@
 import customtkinter as ctk
 from PIL import Image
-from colour import Color
 
 class App(ctk.CTk):
     def __init__(self):
