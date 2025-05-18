@@ -12,7 +12,7 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file = Kanji.KanjiDB.the()):
     Parameters : kanji_2_id (kanji) and kanji_file (json file)
     """
     
-    kandict : dict
+    kandict = {}
     n = 0
     
     for kan in kanji_file : 
