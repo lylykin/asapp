@@ -14,6 +14,9 @@ class App(ctk.CTk):
         self.widget_placement()
         self.widget_interact()
 
+        # DEBUG, permet de tracer un trait par défaut
+        # self.custom_stroke_debug([(111, 115), (134, 128), (151, 140), (164, 149), (178, 158), (187, 164), (197, 168), (210, 170), (222, 170), (233, 170), (244, 170), (257, 169), (267, 167)])
+
     def widget_placement(self):
         '''
         Définis les différents widget à placer dans la fenêtre
@@ -122,3 +125,11 @@ class App(ctk.CTk):
         appearance_theme = self.appearance.get()
         ctk.set_appearance_mode(appearance_theme)
         print(f"Apparence changée en {appearance_theme}")
+    
+    def custom_stroke_debug(self, debug_stroke) :
+        '''
+        DEBUG
+        Crée un trait par défaut pour une liste de points
+        '''
+        for x,y in debug_stroke :
+            self.main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)

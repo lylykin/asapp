@@ -33,4 +33,3 @@ elif sys.argv[1] == "display":
         plt.plot(*zip(*stroke.points))
     
     plt.show()
-    
