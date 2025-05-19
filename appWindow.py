@@ -10,7 +10,8 @@ class App(ctk.CTk):
 
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
-        
+        self.list_color = ["red", "blue", "green", "yellow", "orange"] # temporaire, permet de classer les points selon leurs tags visuellement
+
         self.widget_placement()
         self.widget_interact()
 
@@ -46,9 +47,9 @@ class App(ctk.CTk):
 
         # Position des widget dans la canvas_frame
         self.main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
-        self.compare_button.grid(row=1, column = 0, columnspan=2, padx=15, pady=10, sticky="ew") 
-        self.clear_button.grid(row=2, column=1, padx=5, sticky="e")
-        self.correct_button.grid(row=2,column=0,padx=5,sticky = "w") # not implemented / functionnal
+        self.compare_button.grid(row=1, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
+        self.clear_button.grid(row=2, column=1, padx=5, pady=5, sticky="e")
+        self.correct_button.grid(row=2,column=0,padx=5, pady=5,sticky = "w")
 
     def widget_interact(self):
         '''
@@ -59,6 +60,7 @@ class App(ctk.CTk):
         self.main_canvas.bind("<ButtonRelease-1>", self.canvas_end_stroke) # debug pour l'instant
         self.exit_button.bind("<ButtonPress-1>", self.end_app)
         self.clear_button.bind("<ButtonPress-1>", self.clear_canvas)
+        self.correct_button.bind("<ButtonPress-1>", self.clear_last_stroke)
 
     def canvas_new_stroke(self, event):
         '''
@@ -73,18 +75,21 @@ class App(ctk.CTk):
         Permet d'observer le résultat du stockage des points du tracé
         ! temporaire !
         '''
-        print(self.strokes[self.n_strokes],len(self.strokes[self.n_strokes]))
+        if self.strokes.get(self.n_strokes, "list_missing") != "list_missing" : # Evite de récupérer des points si la liste de points n'existe pas
+            print(self.strokes[self.n_strokes],len(self.strokes[self.n_strokes]))
 
     def canvas_draw_stroke(self, event):
         '''
         Appelé quand l'utilisateur maintiens le clic sur le canvas.
         Place un point noir aux coordonnées de la souris, puis ajoute les coordonées au dictionnaire des tracés.
         '''
-        x = event.x
-        y = event.y
-        cursor_pos = (x, y) # Récupère les coordonnées de la souris (relativement au 0,0 du canvas)
-        self.strokes[self.n_strokes].append(cursor_pos) # Ajoute les coordonnées à la liste de points courante
-        self.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags="user_stroke_dot", fill='black', width=4) # Affichage du point
+        if self.strokes.get(self.n_strokes, "list_missing") != "list_missing" : # Evite d'ajouter des points si la liste de points n'existe pas
+            x = event.x
+            y = event.y
+            cursor_pos = (x, y) # Récupère les coordonnées de la souris (relativement au 0,0 du canvas)
+            self.strokes[self.n_strokes].append(cursor_pos) # Ajoute les coordonnées à la liste de points courante
+            couleur = self.list_color[self.n_strokes -1]
+            self.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags=["user_stroke_dot", f"n_stroke_{self.n_strokes}"], fill=couleur, outline=couleur, width=4) # Affichage du point
 
     def end_app(self, event):
         '''
@@ -96,8 +101,20 @@ class App(ctk.CTk):
         '''
         Supprime tous les points tracés par l'utilisateur (tag : user_stroke_dot) et vide le dictionnaire contenant les tracés.
         '''
-        self.main_canvas.delete("user_stroke_dot")
-        self.strokes = {} 
+        if self.n_strokes > 0 : # Evite de supprimer inutilement
+            self.n_strokes = 0
+            self.main_canvas.delete("user_stroke_dot")
+            self.strokes.clear()
+    
+    def clear_last_stroke(self, event):
+        '''
+        Supprime les derniers points du dernier tracé de l'utilisateur
+        '''
+        int_last_stroke = self.n_strokes
+        if int_last_stroke > 0 : # Evite de supprimer inutilement et les bugs
+            self.n_strokes += -1
+            self.main_canvas.delete(f"n_strokes_{int_last_stroke}")
+            self.strokes.pop(int_last_stroke)
     
     def switch_appearance(self):
         '''
