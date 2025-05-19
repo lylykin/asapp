@@ -30,6 +30,7 @@ class App(ctk.CTk):
         self.logo_label = ctk.CTkLabel(self, image=logo, text="App Logo")  # display image with a CTkLabel
         self.compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Comparer le caractère")
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
+        self.correct_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
         self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter")
         self.appearance_switch = ctk.CTkSwitch(self, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearance)
 
@@ -47,6 +48,7 @@ class App(ctk.CTk):
         self.main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
         self.compare_button.grid(row=1, column = 0, columnspan=2, padx=15, pady=10, sticky="ew") 
         self.clear_button.grid(row=2, column=1, padx=5, sticky="e")
+        self.correct_button.grid(row=2,column=0,padx=5,sticky = "w")
 
     def widget_interact(self):
         '''
