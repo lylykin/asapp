@@ -31,7 +31,7 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     if len(kandict.keys()) == 0 : 
         return "Error : no matches found"
     elif len(kandict) == 1 : 
-        return kandict.keys[0].name
+        return [ x for x in kandict.keys()][0].name
     else : 
         return "Error, there is more than 1 candidante and i don't know how to treat this situation yet"
         
@@ -42,13 +42,19 @@ def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
     """
     
     #strokes dtw calcul
-    for kan in kandict.keys(): 
+    
+    keys = kandict.keys()
+    
+    for kan in keys: 
         print(kan.name) 
         kandict[kan] = Dtw(stroke.points, kan.strokes[stroke_number].points).dtw()
       
     dtw_min = min(kandict.values())
     
-    for k,val in kandict.items() : 
+ 
+    items = kandict.copy().items() 
+
+    for k,val in items : 
         if val > dtw_min : 
             kandict.pop(k)
     
