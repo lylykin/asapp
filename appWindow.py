@@ -10,7 +10,6 @@ class App(ctk.CTk):
 
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
-        self.list_color = ["red", "blue", "green", "yellow", "orange"] # temporaire, permet de classer les points selon leurs tags visuellement
 
         self.widget_placement()
         self.widget_interact()
@@ -88,8 +87,7 @@ class App(ctk.CTk):
             y = event.y
             cursor_pos = (x, y) # Récupère les coordonnées de la souris (relativement au 0,0 du canvas)
             self.strokes[self.n_strokes].append(cursor_pos) # Ajoute les coordonnées à la liste de points courante
-            couleur = self.list_color[self.n_strokes -1]
-            self.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags=["user_stroke_dot", f"n_stroke_{self.n_strokes}"], fill=couleur, outline=couleur, width=4) # Affichage du point
+            self.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags=["user_stroke_dot", f"n_stroke_{self.n_strokes}"], width=4) # Affichage du point
 
     def end_app(self, event):
         '''
@@ -113,7 +111,7 @@ class App(ctk.CTk):
         int_last_stroke = self.n_strokes
         if int_last_stroke > 0 : # Evite de supprimer inutilement et les bugs
             self.n_strokes += -1
-            self.main_canvas.delete(f"n_strokes_{int_last_stroke}")
+            self.main_canvas.delete(f"n_stroke_{int_last_stroke}")
             self.strokes.pop(int_last_stroke)
     
     def switch_appearance(self):
