@@ -48,7 +48,7 @@ class App(ctk.CTk):
         self.main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
         self.compare_button.grid(row=1, column = 0, columnspan=2, padx=15, pady=10, sticky="ew") 
         self.clear_button.grid(row=2, column=1, padx=5, sticky="e")
-        self.correct_button.grid(row=2,column=0,padx=5,sticky = "w")
+        self.correct_button.grid(row=2,column=0,padx=5,sticky = "w") # not implemented / functionnal
 
     def widget_interact(self):
         '''
