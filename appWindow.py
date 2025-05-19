@@ -72,10 +72,11 @@ class App(ctk.CTk):
     def canvas_end_stroke(self, event):
         '''
         Permet d'observer le résultat du stockage des points du tracé
-        ! temporaire !
+        ! TEMPORAIRE !
         '''
         if self.strokes.get(self.n_strokes, "list_missing") != "list_missing" : # Evite de récupérer des points si la liste de points n'existe pas
-            print(self.strokes[self.n_strokes],len(self.strokes[self.n_strokes]))
+            
+            print(f"Liste de points :\n{self.strokes[self.n_strokes]}\nNombre de points : {len(self.strokes[self.n_strokes])}")
 
     def canvas_draw_stroke(self, event):
         '''
