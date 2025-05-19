@@ -10,6 +10,7 @@ class App(ctk.CTk):
 
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
+        self.n_kanjis_displayed = 0 # Nombre de caractères affichés à l'écran 
 
         self.widget_placement()
         self.widget_interact()
@@ -26,7 +27,7 @@ class App(ctk.CTk):
 
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(self) # Stocke le canvas
-        self.kanji_found_frame = ctk.CTkScrollableFrame(self) # Stocke les kanji et kana proposés par l'app
+        self.kanji_found_frame = ctk.CTkScrollableFrame(self, width= 200, height= 200) # Stocke les kanji et kana proposés par l'app
         self.main_canvas = ctk.CTkCanvas(self.canvas_frame, bg="white", borderwidth=3, cursor="tcross") 
         logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(50, 50))
         # ctk.CTkImage(light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
@@ -52,6 +53,11 @@ class App(ctk.CTk):
         self.compare_button.grid(row=1, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
         self.clear_button.grid(row=2, column=1, padx=5, pady=5, sticky="e")
         self.correct_button.grid(row=2,column=0,padx=5, pady=5,sticky = "w")
+
+        # Définit la répartition globale de taille de l'application pour les colonnes et lignes
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
 
     def widget_interact(self):
         '''
@@ -117,6 +123,30 @@ class App(ctk.CTk):
             self.n_strokes += -1
             self.main_canvas.delete(f"n_stroke_{int_last_stroke}")
             self.strokes.pop(int_last_stroke)
+
+    def kanji_frame_create(self, frame, kanji : str, widget_size = 30, padxy = 2) :
+        '''
+        Crée une frame contenant un kanji dans le widget spécifié en frame, selon la taille, l'espace et le kanji spécifié
+        S'adapte à la taille du contenant frame
+        '''
+        widget_and_pad_size = widget_size + padxy
+        frame_width = 110 # Supposé être frame["width"] mais marche pas BUG
+        frame_height = 200 # Supposé être frame["height"] mais marche pas BUG
+        n_widget_large = frame_width // widget_and_pad_size
+        n_widget_height = frame_height // widget_and_pad_size
+        column = self.n_kanjis_displayed % n_widget_large
+        row = self.n_kanjis_displayed // n_widget_large
+
+        kanji_frame = ctk.CTkFrame(frame, width=widget_size, height=widget_size, fg_color="white")
+        kanji_display = ctk.CTkLabel(kanji_frame, text = kanji, text_color="black")
+
+        kanji_frame.grid(row = row, column = column, padx=padxy, pady=padxy, sticky="nsew")
+        kanji_frame.grid_propagate(False)  # Empêche la frame de rétrécir
+        kanji_frame.grid_rowconfigure(0, weight=1)
+        kanji_frame.grid_columnconfigure(0, weight=1) # Donne la place de frame disponible aux colonnes et lignes 0
+        kanji_display.grid(row = 0, column = 0)
+        
+        self.n_kanjis_displayed += 1
     
     def switch_appearance(self):
         '''

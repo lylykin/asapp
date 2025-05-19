@@ -15,6 +15,15 @@ class Controller :
         self.reduction_value = 10 # Distance euclidienne en dessous de laquelle les points tracés sont ignorés
 
         self.app.compare_button.bind("<Button-1>", self.identify)
+        # DEBUG, A SUPPRIMER
+        debug_dict = {
+            1 : ["日"],
+            2 : ["a"],
+            3 : ["日"],
+            4 : ["日"],
+            5 : ["日"]
+        }
+        self.display_possible_kanjis(debug_dict)
 
     def identify(self,event):
         client_strokes = self.reduce_dotlist_size(self.app.strokes, self.reduction_value)
@@ -28,6 +37,10 @@ class Controller :
             kanji_2_id.add_stroke(p_stroke)
         return kanjiIdentifier(kanji_2_id,self.db)
     
+    def display_possible_kanjis(self, possible_kanji_dict):
+        for kanji in possible_kanji_dict.values() :
+            self.app.kanji_frame_create(self.app.kanji_found_frame, kanji)
+
     def reduce_dotlist_size(self, dotlist, d_min = 10) :
         '''
         Réduit le nombre de points d'une liste de points en les séparant à la distance euclidienne de d_min pixels au minimum
