@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tabview import TabView
+from PIL import Image
 
 
 class App(ctk.CTk):
@@ -8,31 +9,60 @@ class App(ctk.CTk):
         ctk.set_default_color_theme("assets/asapp_theme.json") # Mets un thème custom pour les widget par défaut
         super().__init__()
         self.title("Asapp")
-        self.geometry("650x420")
+        self.geometry("700x500")
 
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
         self.n_kanjis_displayed = 0 # Nombre de caractères affichés à l'écran 
         
-        self.tab = TabView(master=self)
-    
+        self.tab_name_list = ["tab 1", "tab 2"] # Noms des onglets que l'on donne, impérativement Strings
+        self.tab = TabView(self, self.tab_name_list)
+
+        self.widget_window_placement()
         self.widget_interact()
 
         # DEBUG, permet de tracer un trait par défaut
         # self.custom_stroke_debug([(111, 115), (134, 128), (151, 140), (164, 149), (178, 158), (187, 164), (197, 168), (210, 170), (222, 170), (233, 170), (244, 170), (257, 169), (267, 167)])
 
+    def widget_window_placement(self):
+        '''
+        Définis les différents widget à placer dans la fenêtre générale
+        '''
+        # Définitions des variables
+        self.appearance = ctk.StringVar(value="dark")
 
+        # Définitions des Widget
+        logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(50, 50))
+        # ctk.CTkImage(light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
+        self.logo_label = ctk.CTkLabel(self, image=logo, text="App Logo")  # display image with a CTkLabel
+        self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter")
+        #self.appearance_switch = ctk.CTkSwitch(master, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearance)
+        self.appearance_switch = ctk.CTkSwitch(self, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme")
+
+        # Définition de l'état des widgets par défaut
+        self.appearance_switch.select()
+
+        # Position des widgets dans l'app
+        self.logo_label.grid(row=0,column=0)
+        self.tab.grid(row = 1, column = 1, sticky = "nsew")
+        self.exit_button.grid(row=3,column=0, sticky="s")
+        self.appearance_switch.grid(row=2, column=0, sticky="s")
+
+        # Définit la répartition globale de taille de l'application pour les colonnes et lignes
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=1)
 
     def widget_interact(self):
         '''
         Définis les liaisons entre les widget et les interactions de l'utilisateur
         '''
-        self.main_canvas.bind("<B1-Motion>", self.canvas_draw_stroke) # Détection de mouvement avec clic gauche de la souris sur le canvas
-        self.main_canvas.bind("<ButtonPress-1>", self.canvas_new_stroke)
-        self.main_canvas.bind("<ButtonRelease-1>", self.canvas_end_stroke) # debug pour l'instant
+        self.tab.main_canvas.bind("<B1-Motion>", self.canvas_draw_stroke) # Détection de mouvement avec clic gauche de la souris sur le canvas
+        self.tab.main_canvas.bind("<ButtonPress-1>", self.canvas_new_stroke)
+        self.tab.main_canvas.bind("<ButtonRelease-1>", self.canvas_end_stroke) # debug pour l'instant
         self.exit_button.bind("<ButtonPress-1>", self.end_app)
-        self.clear_button.bind("<ButtonPress-1>", self.clear_canvas)
-        self.correct_button.bind("<ButtonPress-1>", self.clear_last_stroke)
+        self.tab.clear_button.bind("<ButtonPress-1>", self.clear_canvas)
+        self.tab.correct_button.bind("<ButtonPress-1>", self.clear_last_stroke)
 
     def canvas_new_stroke(self, event):
         '''
@@ -61,7 +91,7 @@ class App(ctk.CTk):
             y = event.y
             cursor_pos = (x, y) # Récupère les coordonnées de la souris (relativement au 0,0 du canvas)
             self.strokes[self.n_strokes].append(cursor_pos) # Ajoute les coordonnées à la liste de points courante
-            self.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags=["user_stroke_dot", f"n_stroke_{self.n_strokes}"], width=4) # Affichage du point
+            self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags=["user_stroke_dot", f"n_stroke_{self.n_strokes}"], width=4) # Affichage du point
 
     def end_app(self, event):
         '''
@@ -75,7 +105,7 @@ class App(ctk.CTk):
         '''
         if self.n_strokes > 0 : # Evite de supprimer inutilement
             self.n_strokes = 0
-            self.main_canvas.delete("user_stroke_dot")
+            self.tab.main_canvas.delete("user_stroke_dot")
             self.strokes.clear()
     
     def clear_last_stroke(self, event):
@@ -85,7 +115,7 @@ class App(ctk.CTk):
         int_last_stroke = self.n_strokes
         if int_last_stroke > 0 : # Evite de supprimer inutilement et les bugs
             self.n_strokes += -1
-            self.main_canvas.delete(f"n_stroke_{int_last_stroke}")
+            self.tab.main_canvas.delete(f"n_stroke_{int_last_stroke}")
             self.strokes.pop(int_last_stroke)
 
     def kanji_frame_create(self, frame, kanji : str, widget_size = 30, padxy = 2) :
@@ -126,7 +156,7 @@ class App(ctk.CTk):
         Crée un trait par défaut pour une liste de points
         '''
         for x,y in debug_stroke :
-            self.main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
+            self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
             
             
     def dico_widget(self,dico, event) : 
