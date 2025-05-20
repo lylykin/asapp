@@ -48,16 +48,17 @@ class Controller :
         sous la forme [(x,y),(x,y),...]
         '''
         reduced_dotlist = dotlist.copy()
-        if len(reduced_dotlist) > 1 : # La liste doit contenir au moins 2 points
-            i = 1 # Parcours la liste en prenant le point à la position i et celui à i-1
-            while i < len(reduced_dotlist) :
-                x1, y1 = reduced_dotlist[i-1]
-                x2, y2 = reduced_dotlist[i]
-                dist = self.euclidian_distance(x1, y1, x2, y2)
-                if dist < d_min :
-                    reduced_dotlist.pop(i)
-                else :
-                    i += 1
+        for stroke in reduced_dotlist.keys():
+            if len(reduced_dotlist[stroke]) > 1 : # La liste doit contenir au moins 2 points
+                i = 1 # Parcours la liste en prenant le point à la position i et celui à i-1
+                while i < len(reduced_dotlist[stroke]) :
+                    x1, y1 = reduced_dotlist[stroke][i-1]
+                    x2, y2 = reduced_dotlist[stroke][i]
+                    dist = self.euclidian_distance(x1, y1, x2, y2)
+                    if dist < d_min :
+                        reduced_dotlist[stroke].pop(i)
+                    else :
+                        i += 1
         return reduced_dotlist
             
     
