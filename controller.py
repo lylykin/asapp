@@ -5,14 +5,18 @@ from svg_path import Path
 from identifier import *
 from math import floor
 
+
+
 class Controller :
     app : App
     db : KanjiDB
+    dico : Dictionary
 
-    def __init__(self, app : App, db : KanjiDB = KanjiDB.the()):
+    def __init__(self, app : App, db : KanjiDB = KanjiDB.the(), dico : Dictionary = Dictionary.the()):
         self.app = app
         self.db = db
         self.reduction_value = 10 # Distance euclidienne en dessous de laquelle les points tracés sont ignorés
+        self.dico = dico
 
         self.app.compare_button.bind("<Button-1>", self.identify)
         # DEBUG, A SUPPRIMER
@@ -28,7 +32,7 @@ class Controller :
     def identify(self,event):
         client_strokes = self.reduce_dotlist_size(self.app.strokes, self.reduction_value)
         #print(client_strokes)
-        kanji_2_id = Kanji("Unid")
+        kanji_2_id = Kanji("Unid",strokes= [])
         
         #ici, on doit changer pour n'avoir que 5 points
         for s in client_strokes.values():
@@ -39,7 +43,12 @@ class Controller :
     
     def display_possible_kanjis(self, possible_kanji_dict):
         for kanji in possible_kanji_dict.values() :
-            self.app.kanji_frame_create(self.app.kanji_found_frame, kanji)
+            frame = self.app.kanji_frame_create(self.app.kanji_found_frame, kanji)
+            frame.bind("<Button-1>", self.kanji_def_window, (kanji))
+
+    def kanji_def_window(self, event, kanji : Kanji):
+        pass
+
 
     def reduce_dotlist_size(self, dotlist, d_min = 10) :
         '''
@@ -68,3 +77,16 @@ class Controller :
         '''
         vecteur = [x2-x1, y2-y1]
         return (vecteur[0]**2 + vecteur[1]**2)**0.5
+    
+
+class DefTopLevel(ctk.CTkToplevel):
+    kanji_name : str
+    definition : str
+
+    def __init__(self, kanji : Kanji, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.kanji_name = kanji.name
+        self.definition = self.dico.get_fr_translation(self.kanji_name)
+        text = f"{self.kanji_name} :\n{self.definition}"
+        self.label = ctk.CTkLevel(self, text=text)
+        self.label.pack(padx=5, pady=5)
