@@ -43,8 +43,8 @@ class Controller :
     
     def display_possible_kanjis(self, possible_kanji_dict):
         for kanji in possible_kanji_dict.values() :
-            frame = self.app.kanji_frame_create(self.app.kanji_found_frame, kanji)
-            frame.bind("<Button-1>", self.kanji_def_window, (kanji))
+            self.app.kanji_frame_create(self.app.kanji_found_frame, kanji)
+            
 
     def kanji_def_window(self, event, kanji : Kanji):
         pass
@@ -78,15 +78,17 @@ class Controller :
         vecteur = [x2-x1, y2-y1]
         return (vecteur[0]**2 + vecteur[1]**2)**0.5
     
-
-class DefTopLevel(ctk.CTkToplevel):
+'''
+class TransTopLevel(ctk.CTkToplevel):
     kanji_name : str
-    definition : str
+    translation : str
 
     def __init__(self, kanji : Kanji, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.kanji_name = kanji.name
-        self.definition = self.dico.get_fr_translation(self.kanji_name)
-        text = f"{self.kanji_name} :\n{self.definition}"
+        self.translation = self.dico.get_fr_translation(self.kanji_name)
+        text = f"{self.kanji_name} :\n{self.translation}"
         self.label = ctk.CTkLevel(self, text=text)
         self.label.pack(padx=5, pady=5)
+'''
+
