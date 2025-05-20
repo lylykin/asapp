@@ -6,7 +6,8 @@ with open('\data\kvg-index.json') as f :
     dict_index = json.load(f)
 """
 
-class Dictionary : 
+class Dictionary(object) : 
+    _instance = None
 
 #je considère que le dictionnaire fait francais/ japonais
     
@@ -37,3 +38,9 @@ class Dictionary :
         else : 
             return "erreur : ce mot n'est pas dans le dictionnaire"       
                 
+    @classmethod
+    def the(cls):
+        if cls._instance is None:
+            cls._instance = cls.__new__(cls)
+
+        return cls._instance
