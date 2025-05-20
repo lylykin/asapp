@@ -5,16 +5,22 @@ class Kanji:
     stroke_count: int
     strokes: list[Path]
 
-    def __init__(self, name: str, stroke_count: int = 0, strokes: list[Path] = []):
+    def __init__(self, name: str, strokes: list[Path], stroke_count: int = 0):
         self.name = name 
         self.strokes = strokes
         self.stroke_count = stroke_count
     
     def add_stroke(self, stroke: Path):
+        '''
+        Ajout d'un objet trait à l'objet kanji, adaptant le nombre de traits stockés
+        '''
         self.strokes.append(stroke)
         self.stroke_count = len(self.strokes)
 
     def point_count(self):
+        '''
+        Calcul de la quantité de points total du kanji
+        '''
         count = 0
         for stroke in self.strokes:
             count += len(stroke.points)
@@ -32,7 +38,7 @@ class KanjiDB(object):
 
     def __init__(self):
         raise Exception("Cette classe est un singleton ! Veuillez utiliser la méthode 'KanjiDB.the()' pour obtenir une instance.")
-                
+
     def _update_stroke_db(self):
         for v in self._kanji_db.values():
             print(v)
@@ -48,7 +54,7 @@ class KanjiDB(object):
                     for point in stroke["points"]:
                         strokes[-1].append(point)
                 
-                self._kanji_db[k] = Kanji(v["name"], v["stroke_count"], strokes=strokes)
+                self._kanji_db[k] = Kanji(v["name"], strokes, v["stroke_count"])
             else:
                 raise ValueError(f"Kanji {k} already exists in database")
 
