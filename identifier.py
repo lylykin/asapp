@@ -32,7 +32,7 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     if len(kandict.keys()) == 0 : 
         return "Error : no matches found"
     elif len(kandict) == 1 : 
-        return [ x for x in kandict.keys()][0].name
+        return [ x for x in kandict.keys()][0].name # /!\ EXPLIQUEZ name
     else : 
         return "Error, there is more than 1 candidante and i don't know how to treat this situation yet"
         

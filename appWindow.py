@@ -17,6 +17,7 @@ class App(ctk.CTk):
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
         self.n_kanjis_displayed = 0 # Nombre de caractères affichés à l'écran 
+#        self.kanjis_displayed_dico = {} # Caractères affichés sur la droite du canvas (leur numéro de frame : widget associé)
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list)
@@ -37,10 +38,10 @@ class App(ctk.CTk):
         # Définitions des Widget
         logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(50, 50))
         # ctk.CTkImage(light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
-        self.logo_label = ctk.CTkLabel(self, image=logo, text="App Logo")  # display image with a CTkLabel
+        self.logo_label = ctk.CTkLabel(self, image=logo, text="")  # display image with a CTkLabel
         self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter")
         #self.appearance_switch = ctk.CTkSwitch(master, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearance)
-        self.appearance_switch = ctk.CTkSwitch(self, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme")
+        self.appearance_switch = ctk.CTkSwitch(self, textvariable=self.appearance, variable=self.appearance, offvalue="light", onvalue="dark", text="theme")
 
         # Définition de l'état des widgets par défaut
         self.appearance_switch.select()
@@ -54,7 +55,6 @@ class App(ctk.CTk):
         # Définit la répartition globale de taille de l'application pour les colonnes et lignes
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
 
     def widget_interact(self):
         '''
@@ -67,6 +67,7 @@ class App(ctk.CTk):
         self.tab.clear_button.bind("<ButtonPress-1>", self.clear_canvas)
         self.tab.correct_button.bind("<ButtonPress-1>", self.clear_last_stroke)
         self.tab.compare_button.bind("<Button-1>", self.display_possible_kanjis)
+        self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
 
     def canvas_new_stroke(self, event):
         '''
@@ -122,11 +123,13 @@ class App(ctk.CTk):
             self.tab.main_canvas.delete(f"n_stroke_{int_last_stroke}")
             self.strokes.pop(int_last_stroke)
 
-    def display_possible_kanjis(self, event):
+    def display_possible_kanjis(self, event): # TODO : Docstring
         client_strokes = self.controller.reduce_dotlist_size(self.strokes)
-        possible_kanji_dict = self.controller.identify(client_strokes)
-        for kanji in possible_kanji_dict.values() :
-            self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
+        possible_kanji_dict = self.controller.identify(client_strokes) # /!\ Pour l'instant ne renvoie qu'un seul kanji sous forme de string (incohérent de faire le traitement en dico)
+        # for kanji in possible_kanji_dict.values() :
+        #     self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
+        if len(possible_kanji_dict) == 1 : # TEST TEMPORAIRE, PERMET DE TRAITER LES ERREURS (n'ajoute pas de kanji proposé)
+            self.kanji_frame_create(self.tab.kanji_found_frame, possible_kanji_dict)
 
     def kanji_frame_create(self, frame, kanji : str, widget_size = 30, padxy = 2) :
         '''
@@ -150,11 +153,18 @@ class App(ctk.CTk):
         kanji_frame.grid_columnconfigure(0, weight=1) # Donne la place de frame disponible aux colonnes et lignes 0
         kanji_display.grid(row = 0, column = 0)
 
-        kanji_display.bind("<Button-1>", self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
+        kanji_frame.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
+        kanji_display.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
+#        self.kanjis_displayed_dico[self.n_kanjis_displayed] = kanji_frame # Récupère le widget créé dans un dictionnaire
         
         self.n_kanjis_displayed += 1
     
-    def switch_appearance(self):
+#    def kanji_tr_tabswitch_trigger(self, event) :
+#        kanji_frame = event.widget
+#        kanji = kanji_frame.kanji_display.text
+#        self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji)
+    
+    def switch_appearance(self, event):
         '''
         Change l'apparence actuelle de l'appli selon la valeur du toggle (light ou dark), se référer à asapp_theme.json
         '''
@@ -173,6 +183,3 @@ class App(ctk.CTk):
             
     def dico_widget(self, dico, event) : 
         pass
-    
-app = App()
-app.mainloop()
