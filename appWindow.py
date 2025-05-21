@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tabview import TabView
 from PIL import Image
+from controller import Controller
 
 
 class App(ctk.CTk):
@@ -10,6 +11,8 @@ class App(ctk.CTk):
         super().__init__()
         self.title("Asapp")
         self.geometry("700x500")
+
+        self.controller = Controller()
 
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
@@ -63,6 +66,7 @@ class App(ctk.CTk):
         self.exit_button.bind("<ButtonPress-1>", self.end_app)
         self.tab.clear_button.bind("<ButtonPress-1>", self.clear_canvas)
         self.tab.correct_button.bind("<ButtonPress-1>", self.clear_last_stroke)
+        self.tab.compare_button.bind("<Button-1>", self.display_possible_kanjis)
 
     def canvas_new_stroke(self, event):
         '''
@@ -118,6 +122,12 @@ class App(ctk.CTk):
             self.tab.main_canvas.delete(f"n_stroke_{int_last_stroke}")
             self.strokes.pop(int_last_stroke)
 
+    def display_possible_kanjis(self, event):
+        client_strokes = self.controller.reduce_dotlist_size(self.strokes)
+        possible_kanji_dict = self.controller.identify(client_strokes)
+        for kanji in possible_kanji_dict.values() :
+            self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
+
     def kanji_frame_create(self, frame, kanji : str, widget_size = 30, padxy = 2) :
         '''
         Crée une frame contenant un kanji dans le widget spécifié en frame, selon la taille, l'espace et le kanji spécifié
@@ -159,7 +169,7 @@ class App(ctk.CTk):
             self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
             
             
-    def dico_widget(self,dico, event) : 
+    def dico_widget(self, dico, event) : 
         pass
     
 app = App()

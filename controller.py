@@ -1,6 +1,5 @@
 from kanji import Kanji, KanjiDB
 from dictionary import Dictionary
-from appWindow import App
 from svg_path import Path
 from identifier import *
 from math import floor
@@ -8,54 +7,37 @@ from math import floor
 
 
 class Controller :
-    app : App
     db : KanjiDB
     dico : Dictionary
 
-    def __init__(self, app : App, db : KanjiDB = KanjiDB.the(), dico : Dictionary = Dictionary.the()):
-        self.app = app
+    def __init__(self, db : KanjiDB = KanjiDB.the(), dico : Dictionary = Dictionary.the()):
         self.db = db
         self.reduction_value = 10 # Distance euclidienne en dessous de laquelle les points tracés sont ignorés
         self.dico = dico
 
-        self.app.compare_button.bind("<Button-1>", self.identify)
-        # DEBUG, A SUPPRIMER
-        debug_dict = {
-            1 : ["日"],
-            2 : ["a"],
-            3 : ["日"],
-            4 : ["日"],
-            5 : ["日"]
-        }
-        self.display_possible_kanjis(debug_dict)
 
-    def identify(self,event):
-        client_strokes = self.reduce_dotlist_size(self.app.strokes, self.reduction_value)
-        #print(client_strokes)
+
+    def identify(self,strokes):
         kanji_2_id = Kanji("Unid",strokes= [])
-        
+        print(strokes)
         #ici, on doit changer pour n'avoir que 5 points
-        for s in client_strokes.values():
+        for s in strokes.values():
             p_stroke = Path()
             p_stroke.points = [s[pt] for pt in range(0, len(s), floor(len(s)/5))] 
             kanji_2_id.add_stroke(p_stroke)
         return kanjiIdentifier(kanji_2_id,self.db)
     
-    def display_possible_kanjis(self, possible_kanji_dict):
-        for kanji in possible_kanji_dict.values() :
-            self.app.kanji_frame_create(self.app.kanji_found_frame, kanji)
-            
-
-    def kanji_def_window(self, event, kanji : Kanji):
+    def kanji_tr_tabswitch(self, event, kanji : Kanji):
         pass
 
 
-    def reduce_dotlist_size(self, dotlist, d_min = 10) :
+    def reduce_dotlist_size(self, dotlist) :
         '''
         Réduit le nombre de points d'une liste de points en les séparant à la distance euclidienne de d_min pixels au minimum
         dotlist : list
         sous la forme [(x,y),(x,y),...]
         '''
+        d_min = self.reduction_value
         reduced_dotlist = dotlist.copy()
         for stroke in reduced_dotlist.keys():
             if len(reduced_dotlist[stroke]) > 1 : # La liste doit contenir au moins 2 points

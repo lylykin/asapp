@@ -11,7 +11,7 @@ class TabView(ctk.CTkTabview):
 
         # add widgets on tabs
         self.widget_compare_canvas_placement(master = self.tab(tab_name_list[0]))
-        self.widget_dictionnary_placement(master = self.tab(tab_name_list[1]))
+        self.widget_dictionary_placement(master = self.tab(tab_name_list[1]))
     
     def widget_compare_canvas_placement(self, master):
         '''
@@ -40,7 +40,7 @@ class TabView(ctk.CTkTabview):
         self.grid_columnconfigure(0, weight=2)
         self.grid_columnconfigure(1, weight=1)
 
-    def widget_dictionnary_placement(self, master):
+    def widget_dictionary_placement(self, master):
         '''
         Définis les différents widget à placer dans la fenêtre de la tab dictionnaire
         '''

@@ -1,11 +1,9 @@
 from loader import compute_kanji_cache
 from matplotlib import pyplot as plt
 import sys
-from controller import Controller
 from appWindow import App
 
 asapp = App()
-control = Controller(asapp)
 asapp.mainloop()
 
 
