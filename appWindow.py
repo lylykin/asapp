@@ -18,7 +18,7 @@ class App(ctk.CTk):
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
         self.n_kanjis_displayed = 0 # Nombre de caractères affichés à l'écran 
         
-        self.tab_name_list = ["tab 1", "tab 2"] # Noms des onglets que l'on donne, impérativement Strings
+        self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list)
 
         self.widget_window_placement()
@@ -149,6 +149,8 @@ class App(ctk.CTk):
         kanji_frame.grid_rowconfigure(0, weight=1)
         kanji_frame.grid_columnconfigure(0, weight=1) # Donne la place de frame disponible aux colonnes et lignes 0
         kanji_display.grid(row = 0, column = 0)
+
+        kanji_display.bind("<Button-1>", self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
         
         self.n_kanjis_displayed += 1
     

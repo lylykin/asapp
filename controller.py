@@ -18,17 +18,30 @@ class Controller :
 
 
     def identify(self,strokes):
+        '''
+        Recieves a set of strokes and outputs the closest matching kanji in the database based on a DTW algorithm
+        '''
         kanji_2_id = Kanji("Unid",strokes= [])
         print(strokes)
         #ici, on doit changer pour n'avoir que 5 points
         for s in strokes.values():
             p_stroke = Path()
-            p_stroke.points = [s[pt] for pt in range(0, len(s), floor(len(s)/5))] 
+            if len(s)>5:
+                p_stroke.points = [s[pt] for pt in range(0, len(s), floor(len(s)/5))] 
+            else :
+                # Failsafe si la courbe avait moins de 5 points
+                p_stroke.points = s
             kanji_2_id.add_stroke(p_stroke)
         return kanjiIdentifier(kanji_2_id,self.db)
     
-    def kanji_tr_tabswitch(self, event, kanji : Kanji):
-        pass
+    def kanji_tr_tabswitch(self, tab, tab_name_list, kanji : str):
+        tab.set(tab_name_list[1])
+        """
+        Items needed in the dictionary tab :
+        - text entry
+        - label frame for translations
+        """
+        
 
 
     def reduce_dotlist_size(self, dotlist) :
@@ -59,18 +72,5 @@ class Controller :
         '''
         vecteur = [x2-x1, y2-y1]
         return (vecteur[0]**2 + vecteur[1]**2)**0.5
-    
-'''
-class TransTopLevel(ctk.CTkToplevel):
-    kanji_name : str
-    translation : str
 
-    def __init__(self, kanji : Kanji, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.kanji_name = kanji.name
-        self.translation = self.dico.get_fr_translation(self.kanji_name)
-        text = f"{self.kanji_name} :\n{self.translation}"
-        self.label = ctk.CTkLevel(self, text=text)
-        self.label.pack(padx=5, pady=5)
-'''
 
