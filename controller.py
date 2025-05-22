@@ -1,7 +1,7 @@
 from kanji import Kanji, KanjiDB
 from dictionary import Dictionary
 from svg_path import Path
-from identifier import *
+import identifier
 from math import floor
 
 
@@ -32,7 +32,7 @@ class Controller :
                 # Failsafe si la courbe avait moins de 5 points
                 p_stroke.points = s
             kanji_2_id.add_stroke(p_stroke)
-        return kanjiIdentifier(kanji_2_id,self.db)
+        return identifier.kanjiIdentifier(kanji_2_id)
     
     def kanji_tr_tabswitch(self, tab, tab_name_list, kanji : str):
         tab.set(tab_name_list[1])
