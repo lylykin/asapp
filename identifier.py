@@ -34,29 +34,46 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         return [k.name for k in kandict.keys()] # Renvoie la liste des caractères sélectionnés, contient les str tirés de la variable 'name' des objets kanji
         
 
+
+"""
+Lerp function from vA when factor is 0 and vB when factor is 1 
+it smoothly blend between the two value. 
+
+"""
+def lerp(va, vb, factor):
+    return (1-factor) * va + factor * vb
+    
+
 def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
     """
     update the dico of the candidates kanji according to the dtw algorithm, keeping the best candidates for a given stroke
     """
     keys = kandict.keys() # Tous les kanjis à traiter par dtw du nombre de trait stroke_number
     
-    tolerance = 2 # Facteur multiplicatif pour sélectionner les kanji, /!\ valeur arbitraire /!\
+
+    tolerance = 1 
+    # tolerance = 2 # Facteur multiplicatif pour sélectionner les kanji, /!\ valeur arbitraire /!\
 
     # Donne le score dtw de corrélation entre le trait à comparer et chaque traits de référence n°stroke_number
+    
+    summed = 0
     for kan in keys:
         kandict[kan] = Dtw(stroke.points, kan.strokes[stroke_number].points).dtw()
-    
+        summed += kandict[kan]
       
     dtw_min = min(kandict.values()) # Relève le score le plus bas (meilleure corrélation)
-    
- 
+    #dtw_max = (kandict.values())
+    avg = summed / len(kandict.values())
+
     items = kandict.copy().items() # Paires (kanji object, dtw score)
 
     # Réduit le dico des kanjis de même nombre de traits à tous ceux de score dtw acceptable
     for k,val in items : 
-        if val > tolerance * dtw_min : 
+        if val > lerp(dtw_min, avg, tolerance): 
             kandict.pop(k)
     # Illogique de faire une comparaison directe au min, puisque tous les kanji autres que celui de score min sont éliminés dès le premier trait
+    
+
     
     return kandict
     
