@@ -123,13 +123,14 @@ class App(ctk.CTk):
             self.tab.main_canvas.delete(f"n_stroke_{int_last_stroke}")
             self.strokes.pop(int_last_stroke)
 
-    def display_possible_kanjis(self, event): # TODO : Docstring
+    def display_possible_kanjis(self, event):
+        '''
+        Fetches the closest kanji to the user's drawing and orders their display
+        '''
         client_strokes = self.controller.reduce_dotlist_size(self.strokes)
-        possible_kanji_dict = self.controller.identify(client_strokes) # /!\ Pour l'instant ne renvoie qu'un seul kanji sous forme de string (incohérent de faire le traitement en dico)
-        # for kanji in possible_kanji_dict.values() :
-        #     self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
-        if len(possible_kanji_dict) == 1 : # TEST TEMPORAIRE, PERMET DE TRAITER LES ERREURS (n'ajoute pas de kanji proposé)
-            self.kanji_frame_create(self.tab.kanji_found_frame, possible_kanji_dict)
+        possible_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
+        for kanji in possible_kanjis:
+            self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
 
     def kanji_frame_create(self, frame, kanji : str, widget_size = 30, padxy = 2) :
         '''

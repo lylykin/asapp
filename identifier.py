@@ -3,13 +3,11 @@ from kanji import Kanji, KanjiDB
 import math
 from svg_path import Path
 
-#note : this way of implementing could allow us to update the app to show all of the closest kanjis.
-#note : attention : this file isnt debbuged!!!!!!
-#note : A#6
+
 
 def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     """
-    returns which Kanji it is according to dtw, compares kanji_2_id and the kanjis in the file
+    returns the closest kanjis according to dtw, compares kanji_2_id and the kanjis in the file
     Parameters : kanji_2_id (kanji) and kanji_file (json file) treated like an singleton (containing all the possible kanjis to compare)
     """
     
@@ -22,19 +20,18 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         if stroke_count == kan.stroke_count:
             kandict[kan] = math.inf
 
-    #shortening the number of kanjis until we looked for all the strokes or ended on 1 kanji. check how the stokes attributes is made, im not sure it works that way
+    # shortening the number of kanjis until we looked for all the strokes or ended on 1 kanji.
     n = 0 # n-ième trait à comparer avec le dtw
-    while len(kandict.keys()) > 1 or n < stroke_count : 
-        print(n)
+    while len(kandict.keys()) > 1 and n < stroke_count : 
+        print(f"stroke {n}") # DEBUG
+        print([k.name for k in kandict.keys()]) # DEBUG
         kandict = dtwStroke(kanji_2_id.strokes[n],n, kandict) # Comparer le trait n du kanji_2_id au trait n de tous les kanji de kandict (même nombre de trait)
-        n+=1 # Conservant les meilleurs candidats pour le trait n uniquement, va comparer le trait n+1 (s'il existe)
+        n += 1 # Conservant les meilleurs candidats pour le trait n uniquement, va comparer le trait n+1 (s'il existe)
         
     if len(kandict.keys()) == 0 : 
         return "Error : no matches found"
-    elif len(kandict) == 1 : 
-        return [ x for x in kandict.keys()][0].name # /!\ EXPLIQUEZ name
     else : 
-        return "Error, there is more than 1 candidante and i don't know how to treat this situation yet"
+        return [k.name for k in kandict.keys()] # Renvoie la liste des caractères sélectionnés, contient les str tirés de la variable 'name' des objets kanji
         
 
 def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
@@ -43,9 +40,10 @@ def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
     """
     keys = kandict.keys() # Tous les kanjis à traiter par dtw du nombre de trait stroke_number
     
+    tolerance = 2 # Facteur multiplicatif pour sélectionner les kanji, /!\ valeur arbitraire /!\
+
     # Donne le score dtw de corrélation entre le trait à comparer et chaque traits de référence n°stroke_number
-    for kan in keys: 
-        print(kan.name) 
+    for kan in keys:
         kandict[kan] = Dtw(stroke.points, kan.strokes[stroke_number].points).dtw()
     
       
@@ -54,10 +52,11 @@ def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
  
     items = kandict.copy().items() # Paires (kanji object, dtw score)
 
-    # Réduit le dico des kanjis de même nombre de traits à tous ceux de score dtw minimal
+    # Réduit le dico des kanjis de même nombre de traits à tous ceux de score dtw acceptable
     for k,val in items : 
-        if val > dtw_min : 
+        if val > tolerance * dtw_min : 
             kandict.pop(k)
+    # Illogique de faire une comparaison directe au min, puisque tous les kanji autres que celui de score min sont éliminés dès le premier trait
     
     return kandict
     

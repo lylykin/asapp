@@ -7,15 +7,10 @@ from math import floor
 
 
 class Controller :
-    db : KanjiDB
-    dico : Dictionary
 
-    def __init__(self, db : KanjiDB = KanjiDB.the(), dico : Dictionary = Dictionary.the()):
-        self.db = db
+    def __init__(self, dico : Dictionary = Dictionary.the()):
         self.reduction_value = 10 # Distance euclidienne en dessous de laquelle les points tracés sont ignorés
         self.dico = dico
-
-
 
     def identify(self,strokes):
         '''
@@ -32,8 +27,8 @@ class Controller :
                 # Failsafe si la courbe avait moins de 5 points
                 p_stroke.points = s
             kanji_2_id.add_stroke(p_stroke)
-        return identifier.kanjiIdentifier(kanji_2_id)
-    
+        return identifier.kanjiIdentifier(kanji_2_id)   
+
     def kanji_tr_tabswitch(self, tab, tab_name_list, kanji : str):
         tab.set(tab_name_list[1])
         """
@@ -42,8 +37,6 @@ class Controller :
         - label frame for translations
         """
         
-
-
     def reduce_dotlist_size(self, dotlist) :
         '''
         Réduit le nombre de points d'une liste de points en les séparant à la distance euclidienne de d_min pixels au minimum
@@ -65,7 +58,6 @@ class Controller :
                         i += 1
         return reduced_dotlist
             
-    
     def euclidian_distance(self, x1, y1, x2, y2):
         '''
         Etablit la distance euclidienne entre deux points sous la forme (x, y) selon leurs coordonnées
