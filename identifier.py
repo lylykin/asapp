@@ -30,8 +30,11 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         
     if len(kandict.keys()) == 0 : 
         return "Error : no matches found"
-    else : 
-        return [k.name for k in kandict.keys()] # Renvoie la liste des caractères sélectionnés, contient les str tirés de la variable 'name' des objets kanji
+    else :
+        print([(k.name, kandict[k]) for k in kandict.keys()])
+        sorted_kanjis = sorted(kandict, key=kandict.get)
+        print([k.name for k in sorted_kanjis])
+        return [k.name for k in sorted_kanjis] # Renvoie la liste des caractères sélectionnés, contient les str tirés de la variable 'name' des objets kanji
         
 
 

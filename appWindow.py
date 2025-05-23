@@ -17,7 +17,7 @@ class App(ctk.CTk):
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
         self.n_kanjis_displayed = 0 # Nombre de caractères affichés à l'écran 
-#        self.kanjis_displayed_dico = {} # Caractères affichés sur la droite du canvas (leur numéro de frame : widget associé)
+        self.kanjis_displayed_dico = {} # Caractères affichés sur la droite du canvas (leur numéro de frame : widget associé)
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list)
@@ -125,8 +125,13 @@ class App(ctk.CTk):
 
     def display_possible_kanjis(self, event):
         '''
-        Fetches the closest kanji to the user's drawing and orders their display
+        Clears the displayed kanjis (if any), then fetches the closest kanji to the user's drawing and orders their display
         '''
+        for display in self.kanjis_displayed_dico.values():
+            display.destroy()
+        self.n_kanjis_displayed = 0
+        self.kanjis_displayed_dico = {}
+
         client_strokes = self.controller.reduce_dotlist_size(self.strokes)
         possible_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
         for kanji in possible_kanjis:
@@ -156,7 +161,7 @@ class App(ctk.CTk):
 
         kanji_frame.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
         kanji_display.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
-#        self.kanjis_displayed_dico[self.n_kanjis_displayed] = kanji_frame # Récupère le widget créé dans un dictionnaire
+        self.kanjis_displayed_dico[self.n_kanjis_displayed] = kanji_frame # Récupère le widget créé dans un dictionnaire
         
         self.n_kanjis_displayed += 1
     
