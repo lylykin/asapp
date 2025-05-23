@@ -18,7 +18,7 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         # first checking the number of strokes to avoid useless calculus. 
         # Adds the characters which have the same amount of strokes as kanji_2_id
         if stroke_count == kan.stroke_count:
-            kandict[kan] = math.inf
+            kandict[kan] = 0
 
     # shortening the number of kanjis until we looked for all the strokes or ended on 1 kanji.
     n = 0 # n-ième trait à comparer avec le dtw
@@ -58,7 +58,7 @@ def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
     
     summed = 0
     for kan in keys:
-        kandict[kan] = Dtw(stroke.points, kan.strokes[stroke_number].points).dtw()
+        kandict[kan] += Dtw(stroke.points, kan.strokes[stroke_number].points).dtw()
         summed += kandict[kan]
       
     dtw_min = min(kandict.values()) # Relève le score le plus bas (meilleure corrélation)
