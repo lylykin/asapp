@@ -1,6 +1,5 @@
 from dtw import Dtw
 from kanji import Kanji, KanjiDB
-import math
 from svg_path import Path
 
 
@@ -31,19 +30,16 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     if len(kandict.keys()) == 0 : 
         return "Error : no matches found"
     else :
-        print([(k.name, kandict[k]) for k in kandict.keys()])
         sorted_kanjis = sorted(kandict, key=kandict.get)
-        print([k.name for k in sorted_kanjis])
-        return [k.name for k in sorted_kanjis] # Renvoie la liste des caractères sélectionnés, contient les str tirés de la variable 'name' des objets kanji
+        return [k.name for k in sorted_kanjis] # Renvoie la liste des caractères sélectionnés, triés par score DTW croissant
         
 
 
-"""
-Lerp function from vA when factor is 0 and vB when factor is 1 
-it smoothly blend between the two value. 
-
-"""
 def lerp(va, vb, factor):
+    """
+    Lerp function from vA when factor is 0 and vB when factor is 1 
+    it smoothly blend between the two value. 
+    """
     return (1-factor) * va + factor * vb
     
 
@@ -54,8 +50,7 @@ def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
     keys = kandict.keys() # Tous les kanjis à traiter par dtw du nombre de trait stroke_number
     
 
-    tolerance = 1 
-    # tolerance = 2 # Facteur multiplicatif pour sélectionner les kanji, /!\ valeur arbitraire /!\
+    tolerance = 0.7 # Valeur délimitant la limite haute pour le choix des kanji à garder selon leur score DTW
 
     # Donne le score dtw de corrélation entre le trait à comparer et chaque traits de référence n°stroke_number
     
@@ -72,9 +67,8 @@ def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
 
     # Réduit le dico des kanjis de même nombre de traits à tous ceux de score dtw acceptable
     for k,val in items : 
-        if val > lerp(dtw_min, avg, tolerance): 
+        if val > lerp(dtw_min, avg, tolerance): # Elimine les kanji de score supérieur à une valeur entre le min et la moyenne
             kandict.pop(k)
-    # Illogique de faire une comparaison directe au min, puisque tous les kanji autres que celui de score min sont éliminés dès le premier trait
     
 
     
