@@ -132,7 +132,7 @@ class App(ctk.CTk):
         self.n_kanjis_displayed = 0
         self.kanjis_displayed_dico = {}
 
-        client_strokes = self.controller.reduce_dotlist_size(self.strokes)
+        client_strokes = self.controller.reduce_dotlist_size(self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
         possible_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
         for kanji in possible_kanjis:
             self.kanji_frame_create(self.tab.kanji_found_frame, kanji)

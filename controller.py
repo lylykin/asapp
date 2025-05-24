@@ -16,13 +16,14 @@ class Controller :
         '''
         Recieves a set of strokes and outputs the closest matching kanji in the database based on a DTW algorithm
         '''
+        n_points = 6
         kanji_2_id = Kanji("Unid",strokes= [])
         print(strokes)
         #ici, on doit changer pour n'avoir que 5 points
         for s in strokes.values():
             p_stroke = Path()
-            if len(s)>5:
-                p_stroke.points = [s[pt] for pt in range(0, len(s), floor(len(s)/5))] 
+            if len(s)>n_points:
+                p_stroke.points = [s[pt] for pt in range(0, len(s), floor(len(s)/n_points))] 
             else :
                 # Failsafe si la courbe avait moins de 5 points
                 p_stroke.points = s
@@ -36,6 +37,25 @@ class Controller :
         - text entry
         - label frame for translations
         """
+
+    def drawing_offset(self, dotlist : dict):
+        '''
+        Finds the upper-left corner limit coordinates of user drawing and offsets all points to 'move' the drawing to the upper-left corner of canvas
+        '''
+        x_points = []
+        y_points = []
+        offset_dotlist = {}
+        for stroke_points in dotlist.values():
+            for point in stroke_points:
+                x_points.append(point[0])
+                y_points.append(point[1])
+        x_min, y_min = min(x_points), min(y_points)
+        
+        for stroke,points in dotlist.items():
+            offset_points = [(p[0]-x_min,p[1]-y_min) for p in points]
+            offset_dotlist[stroke] = offset_points
+    
+        return offset_dotlist
         
     def reduce_dotlist_size(self, dotlist) :
         '''

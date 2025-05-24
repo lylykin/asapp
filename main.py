@@ -22,7 +22,7 @@ elif sys.argv[1] == "display":
     from svg_path import convert_path_from_dstring, Path
 
     kanji_db = KanjiDB.the()._kanji_db
-    kanji = kanji_db["片"]
+    kanji = kanji_db["⻖"]
     print(kanji.name)
     print(kanji.stroke_count)
     print(kanji.point_count())

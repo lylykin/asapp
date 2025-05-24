@@ -50,7 +50,7 @@ def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
     keys = kandict.keys() # Tous les kanjis à traiter par dtw du nombre de trait stroke_number
     
 
-    tolerance = 0.7 # Valeur délimitant la limite haute pour le choix des kanji à garder selon leur score DTW
+    tolerance = 0.6 # Valeur délimitant la limite haute pour le choix des kanji à garder selon leur score DTW
 
     # Donne le score dtw de corrélation entre le trait à comparer et chaque traits de référence n°stroke_number
     
