@@ -20,7 +20,7 @@ class App(ctk.CTk):
         self.kanjis_displayed_dico = {} # Caractères affichés sur la droite du canvas (leur numéro de frame : widget associé)
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
-        self.tab = TabView(self, self.tab_name_list)
+        self.tab = TabView(self, self.tab_name_list, self.controller)
 
         self.widget_window_placement()
         self.widget_interact()

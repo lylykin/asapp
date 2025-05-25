@@ -2,9 +2,9 @@ import customtkinter as ctk
 from PIL import Image   
     
 class TabView(ctk.CTkTabview):
-    def __init__(self, master, tab_name_list, **kwargs):
+    def __init__(self, master, tab_name_list, controller, **kwargs):
         super().__init__(master, corner_radius=10, border_width= 10, **kwargs)
-
+        self.controller = controller
         # create tabs
         self.add(tab_name_list[0])
         self.add(tab_name_list[1])
@@ -63,7 +63,7 @@ class TabView(ctk.CTkTabview):
 
         # Position des widget dans la desc_frame
         self.kanji_name_label.grid(row=0, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
-        self.desc_frame.grid(row=1, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
+        self.desc_label.grid(row=1, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
 
         # Position des widget dans la kanji_frame_dictionary
         self.kanji_display_dictionary.grid(row=0, column=0, sticky="nsew")
