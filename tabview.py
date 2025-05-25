@@ -49,30 +49,31 @@ class TabView(ctk.CTkTabview):
         '''
         # Définitions des Widget
         self.menu_button_dictionary = ctk.CTkButton(master, text="Bon le menu là", anchor="center")
-        self.desc_frame = ctk.CTkFrame(master, width=400, height=400, fg_color="red")
+        self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray")
         self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", underline=True)))
         self.desc_label = ctk.CTkLabel(self.desc_frame, text="")
-        self.kanji_frame_dictionary = ctk.CTkFrame(master, width=400, height=400, fg_color="white")
+        self.kanji_frame_dictionary = ctk.CTkFrame(master, fg_color="white", width=400, height=400)
         self.kanji_display_dictionary = ctk.CTkLabel(self.kanji_frame_dictionary, text = "", text_color="black")
 
         # Position des frame et widgets dans la tab
-        self.menu_button_dictionary.grid(row=2,column=0) #, sticky="sw"
-        self.kanji_display_dictionary.grid(row=0, column=0) #, sticky="nw"
-        self.desc_frame.grid(row=0, column=1, sticky="e") #, rowspan=2
-        self.kanji_frame_dictionary.grid(row=1, column=0) #, sticky="ns"
+        self.menu_button_dictionary.grid(row=2,column=0, sticky="sw")
+        self.kanji_display_dictionary.grid(row=0, column=0, sticky="nw")
+        self.desc_frame.grid(row=0, column=1, sticky="nsew", rowspan=2, padx=10, pady=10)
+        self.kanji_frame_dictionary.grid(row=1, column=0, sticky="ns")
 
         # Position des widget dans la desc_frame
         self.kanji_name_label.grid(row=0, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
-        self.desc_frame.grid(row=1, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
+        self.desc_label.grid(row=1, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
 
         # Position des widget dans la kanji_frame_dictionary
         self.kanji_display_dictionary.grid(row=0, column=0, sticky="nsew")
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
-        #self.grid_rowconfigure(0, weight=1)
-        #self.grid_columnconfigure(0, weight=1)
-        #self.grid_columnconfigure(1, weight=2)
-        #self.grid_propagate(False)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=2)
+        self.grid_propagate(False)
 
         #DEBUG
         self.display_kanji_dictionary(':D')
