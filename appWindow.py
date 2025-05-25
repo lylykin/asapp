@@ -21,6 +21,9 @@ class App(ctk.CTk):
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list, self.controller)
+        for tab_name in self.tab_name_list:
+            self.tab._tab_dict[tab_name].grid_configure(ipady=300)
+        self.tab._segmented_button.configure(font=ctk.CTkFont(family="Arial", size=12, weight="bold"))
 
         self.widget_window_placement()
         self.widget_interact()
@@ -48,13 +51,15 @@ class App(ctk.CTk):
 
         # Position des widgets dans l'app
         self.logo_label.grid(row=0,column=0)
-        self.tab.grid(row = 1, column = 1, sticky = "nsew")
+        self.tab.grid(row = 0, column = 1, rowspan=3, sticky = "nsew", padx=20, pady=20)
         self.exit_button.grid(row=3,column=0, sticky="s")
         self.appearance_switch.grid(row=2, column=0, sticky="s")
 
         # Définit la répartition globale de taille de l'application pour les colonnes et lignes
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(1, weight=15)
+        self.grid_columnconfigure(1, weight=15)
+        self.grid_rowconfigure((0,2,3), weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
     def widget_interact(self):
         '''
@@ -137,7 +142,7 @@ class App(ctk.CTk):
         for kanji in possible_kanjis:
             self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
 
-    def kanji_frame_create(self, frame, kanji : str, widget_size = 30, padxy = 2) :
+    def kanji_frame_create(self, frame, kanji : str, widget_size = 40, padxy = 2) :
         '''
         Crée une frame contenant un kanji dans le widget spécifié en frame, selon la taille, l'espace et le kanji spécifié
         S'adapte à la taille du contenant frame

@@ -3,12 +3,14 @@ from PIL import Image
     
 class TabView(ctk.CTkTabview):
     def __init__(self, master, tab_name_list, controller, **kwargs):
-        super().__init__(master, corner_radius=10, border_width= 10, **kwargs)
+        super().__init__(master, corner_radius=10, border_width= 10, **kwargs) # , height=400, width=700
         self.controller = controller
         # create tabs
         self.add(tab_name_list[0])
         self.add(tab_name_list[1])
         self.set(tab_name_list[0]) # Tab principale ouverte par défaut
+
+        self.grid_propagate(True)
 
         # add widgets on tabs
         self.widget_compare_canvas_placement(master = self.tab(tab_name_list[0]))
@@ -18,9 +20,15 @@ class TabView(ctk.CTkTabview):
         '''
         Définis les différents widget à placer dans la fenêtre de la tab canvas
         '''
+        # Définition et position de la frame centrale contenant la tab
+        #self.center_frame_compare_canvas = ctk.CTkFrame(master)
+        #self.center_frame_compare_canvas.grid(row=0,column=0, padx=10, pady=10, sticky="nsew")
+        #self.center_frame_compare_canvas.grid_rowconfigure(0, weight=1)
+        #self.center_frame_compare_canvas.grid_propagate(True)
+
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(master) # Stocke le canvas
-        self.kanji_found_frame = ctk.CTkScrollableFrame(master, width= 200, height= 200) # Stocke les kanji et kana proposés par l'app
+        self.kanji_found_frame = ctk.CTkScrollableFrame(master) #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
         self.main_canvas = ctk.CTkCanvas(self.canvas_frame, bg="white", borderwidth=3, cursor="tcross") 
         self.compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Comparer le caractère")
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
@@ -40,7 +48,7 @@ class TabView(ctk.CTkTabview):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=2)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_propagate(False)
+        self.grid_propagate(True)
 
     def widget_dictionary_placement(self, master):
         '''
@@ -49,31 +57,36 @@ class TabView(ctk.CTkTabview):
         '''
         # Définitions des Widget
         self.menu_button_dictionary = ctk.CTkButton(master, text="Bon le menu là", anchor="center")
-        self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray")
+        self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray") # Changer à une couleur dynamique réactive au thème
         self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", underline=True)))
         self.desc_label = ctk.CTkLabel(self.desc_frame, text="")
         self.kanji_frame_dictionary = ctk.CTkFrame(master, fg_color="white", width=400, height=400)
-        self.kanji_display_dictionary = ctk.CTkLabel(self.kanji_frame_dictionary, text = "", text_color="black")
+        self.kanji_display_dictionary = ctk.CTkLabel(self.kanji_frame_dictionary, text = "", text_color="black", anchor="center")
 
         # Position des frame et widgets dans la tab
-        self.menu_button_dictionary.grid(row=2,column=0, sticky="sw")
-        self.kanji_display_dictionary.grid(row=0, column=0, sticky="nw")
-        self.desc_frame.grid(row=0, column=1, sticky="nsew", rowspan=2, padx=10, pady=10)
-        self.kanji_frame_dictionary.grid(row=1, column=0, sticky="ns")
+        self.menu_button_dictionary.grid(row=2,column=0, sticky="swe")
+        self.kanji_frame_dictionary.grid(row=0, column=0, sticky="nsew")
+        self.desc_frame.grid(row=0, column=1, sticky="nsew", rowspan=3, padx=10, pady=10)
+
+        #DEBUG
+        #self.frame1 = ctk.CTkFrame(master, fg_color="red")
+        #self.frame2 = ctk.CTkFrame(master, fg_color="green")
+        #self.frame3 = ctk.CTkFrame(master, fg_color="yellow")
+        #self.frame1.grid(row=1, column=1)
 
         # Position des widget dans la desc_frame
-        self.kanji_name_label.grid(row=0, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
-        self.desc_label.grid(row=1, column = 0, columnspan=2, padx=15, pady=5, sticky="ew") 
+        self.kanji_name_label.grid(row=0, column = 0, padx=15, pady=5, sticky="ew") 
+        self.desc_label.grid(row=1, column = 0, padx=15, pady=5, sticky="ew") 
 
         # Position des widget dans la kanji_frame_dictionary
-        self.kanji_display_dictionary.grid(row=0, column=0, sticky="nsew")
+        self.kanji_display_dictionary.grid(row=0, column=0, sticky="nsew", ipadx=20, ipady=20)
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=2)
-        self.grid_propagate(False)
+        self.grid_propagate(True)
 
         #DEBUG
         self.display_kanji_dictionary(':D')
