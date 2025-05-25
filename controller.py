@@ -8,7 +8,7 @@ from math import floor
 
 class Controller :
 
-    def __init__(self, dico : Dictionary = Dictionary.the()):
+    def __init__(self, dico : Dictionary = Dictionary()):
         self.reduction_value = 10 # Distance euclidienne en dessous de laquelle les points tracés sont ignorés
         self.dico = dico
 
@@ -31,12 +31,12 @@ class Controller :
         return identifier.kanjiIdentifier(kanji_2_id)   
 
     def kanji_tr_tabswitch(self, tab, tab_name_list, kanji : str):
+        '''
+        Used when clicking on a proposed kanji frame to switch tab and show its translation
+        '''
         tab.set(tab_name_list[1])
-        """
-        Items needed in the dictionary tab :
-        - text entry
-        - label frame for translations
-        """
+        # tab.entry  Missing editable entry for user to input text
+        tab.display_kanji_dictionary(kanji)
 
     def drawing_offset(self, dotlist : dict):
         '''

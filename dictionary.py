@@ -1,46 +1,21 @@
-#might be useful later?
-"""
-import json
+from PyMultiDictionary import MultiDictionary
 
-with open('\data\kvg-index.json') as f : 
-    dict_index = json.load(f)
-"""
-
-class Dictionary(object) : 
-    _instance = None
+#bon en fait la librairie fait tout, pas besoin de ca rip mon code 
+class Dictionary() : 
+    multi_dico : MultiDictionary
 
 #je considère que le dictionnaire fait francais/ japonais
     
     def __init__(self):
-        self.j2f_dict = {}
-        self.f2j_dict = {}
-
-    def add_dict(self, j_word : str, fr_word : str) : 
-        """
-        Pour ajouter un mot dans le dictionnaire
-        """
-        self.f2j_dict[fr_word] = j_word
-        self.j2f_dict[j_word] = fr_word
+        self.multi_dico = MultiDictionary()
         
-    def get_fr_translation(self, j_word) : 
+    def get_fr_translation(self, j_word : str) : 
         """returns the french translation in the dico"""
-        if j_word in self.j2f_dict.keys() : 
-            return self.j2f_dict[j_word] 
+        #errors are supported by the lib
+        return self.multi_dico.translate('jp', j_word, to='fr')
         
-        else : 
-            return "erreur : ce mot n'est pas dans le dictionnaire"
-        
-    def get_jp_translation(self, fr_word) : 
+    def get_jp_translation(self, fr_word :str) : 
         """returns the japanese translation in the dico"""
-        if fr_word in self.j2f_dict.keys() : 
-            return self.j2f_dict[fr_word] 
-        
-        else : 
-            return "erreur : ce mot n'est pas dans le dictionnaire"       
+        return self.multi_dico.translate("fr", fr_word, to="jp")
+      
                 
-    @classmethod
-    def the(cls):
-        if cls._instance is None:
-            cls._instance = cls.__new__(cls)
-
-        return cls._instance
