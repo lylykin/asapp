@@ -216,7 +216,7 @@ class App(ctk.CTk):
         """
         Appelée lorsque l'utilisateur appuie sur une touche du clavier, recherche parmis les kanjis existant ou dans le dictionnaire les informations à afficher
         """
-        to_search = self.tab.entry.get
+        to_search = self.tab.text_box.get(1.0,ctk.END)
         if self.tab.last_search != to_search:
             self.tab.last_search = to_search
             # INSERER LE PROCESS DE RECHERCHE
