@@ -10,7 +10,7 @@ class App(ctk.CTk):
         ctk.set_default_color_theme("assets/asapp_theme.json") # Mets un thème custom pour les widget par défaut
         super().__init__()
         self.title("Asapp")
-        self.geometry("700x500")
+        self.geometry("700x550")
 
         self.controller = Controller()
 
@@ -27,9 +27,6 @@ class App(ctk.CTk):
 
         self.widget_window_placement()
         self.widget_interact()
-
-        # DEBUG, permet de tracer un trait par défaut
-        # self.custom_stroke_debug([(111, 115), (134, 128), (151, 140), (164, 149), (178, 158), (187, 164), (197, 168), (210, 170), (222, 170), (233, 170), (244, 170), (257, 169), (267, 167)])
 
     def widget_window_placement(self):
         '''
