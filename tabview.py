@@ -55,6 +55,8 @@ class TabView(ctk.CTkTabview):
         Définis les différents widget à placer dans la fenêtre de la tab dictionnaire
         /!\\Penser à bien donner des noms différents aux widgets de la tab dictionnaire
         '''
+        self.last_search = "" # Dernière recherche effectuée dans le dictionnaire
+
         # Définitions des Widget
         self.text_frame = ctk.CTkFrame(master) # Stocke la zone de texte
         self.text_kanji_found_frame = ctk.CTkScrollableFrame(master) #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
