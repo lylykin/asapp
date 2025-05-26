@@ -13,17 +13,17 @@ class App(ctk.CTk):
         self.geometry("700x550")
 
         self.controller = Controller()
-
-        self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
-        self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
-        self.n_kanjis_displayed = 0 # Nombre de caractères affichés à l'écran 
-        self.kanjis_displayed_dico = {} # Caractères affichés sur la droite du canvas (leur numéro de frame : widget associé)
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list, self.controller)
         for tab_name in self.tab_name_list:
             self.tab._tab_dict[tab_name].grid_configure(ipady=300)
         self.tab._segmented_button.configure(font=ctk.CTkFont(family="Arial", size=12, weight="bold"))
+
+        self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
+        self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
+        self.n_kanjis_displayed = {} # Nombre de caractères affichés sur la droite de chaque tab, contient 1 valeur associée à chaque tab
+        self.kanjis_displayed_dico = {} # Caractères affichés sur la droite de chaque tab (numéro de frame : widget associé)
 
         self.widget_window_placement()
         self.widget_interact()
@@ -68,7 +68,8 @@ class App(ctk.CTk):
         self.exit_button.bind("<ButtonPress-1>", self.end_app)
         self.tab.clear_button.bind("<ButtonPress-1>", self.clear_canvas)
         self.tab.correct_button.bind("<ButtonPress-1>", self.clear_last_stroke)
-        self.tab.compare_button.bind("<Button-1>", self.display_possible_kanjis)
+        self.tab.compare_button.bind("<Button-1>", lambda event : self.display_possible_kanjis('canvas'))
+        self.tab.search_text_button.bind("<Button-1>", lambda event : self.display_possible_kanjis('text'))
         self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
         self.tab.entry.bind("<Any-KeyPress>", self.search_dictionary)
 
@@ -126,24 +127,38 @@ class App(ctk.CTk):
             self.tab.main_canvas.delete(f"n_stroke_{int_last_stroke}")
             self.strokes.pop(int_last_stroke)
 
-    def display_possible_kanjis(self, event):
+    def display_possible_kanjis(self, button : str):
         '''
-        Clears the displayed kanjis (if any), then fetches the closest kanji to the user's drawing and orders their display
+        Clears the displayed kanjis in corresponding tab (if any), then :
+        - fetches the closest kanji to the user's drawing if in canvas tab
+        - splits user input text into individual kanji if in dictionary tab
+        Then orders their display
         '''
-        for display in self.kanjis_displayed_dico.values():
+        for display in self.kanjis_displayed_dico.get(button,{}).values():
             display.destroy()
-        self.n_kanjis_displayed = 0
-        self.kanjis_displayed_dico = {}
+        self.n_kanjis_displayed[button] = 0
+        self.kanjis_displayed_dico[button] = {}
 
-        client_strokes = self.controller.reduce_dotlist_size(self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
-        possible_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
-        if possible_kanjis != []:
-            for kanji in possible_kanjis:
-                self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
-        #else : 
-            # Do something when no kanjis has been found, maybe display the numbers of found kanjis as '0' or display an error
+        if button == 'canvas':
+            client_strokes = self.controller.reduce_dotlist_size(self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
+            found_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
+            frame = self.tab.kanji_found_frame
+        
+        if button == 'text' :
+            # Splits input text by whitespace, then makes a single list of every character
+            raw_kanjis = self.tab.text_box.get(1.0,ctk.END).split()
+            print(raw_kanjis)
+            found_kanjis = []
+            for s in raw_kanjis :
+                for k in s :
+                    found_kanjis.append(k)
+            frame = self.tab.text_kanji_found_frame
 
-    def kanji_frame_create(self, frame, kanji : str, widget_size = 40, padxy = 2) :
+        print(found_kanjis)
+        for kanji in found_kanjis:
+            self.kanji_frame_create(frame, kanji, button)
+
+    def kanji_frame_create(self, frame, kanji : str, button, widget_size = 40, padxy = 2) :
         '''
         Crée une frame contenant un kanji dans le widget spécifié en frame, selon la taille, l'espace et le kanji spécifié
         S'adapte à la taille du contenant frame
@@ -153,8 +168,8 @@ class App(ctk.CTk):
         frame_height = frame.winfo_height()
         n_widget_large = frame_width // widget_and_pad_size
         n_widget_height = frame_height // widget_and_pad_size
-        column = self.n_kanjis_displayed % n_widget_large
-        row = self.n_kanjis_displayed // n_widget_large
+        column = self.n_kanjis_displayed[button] % n_widget_large
+        row = self.n_kanjis_displayed[button] // n_widget_large
 
         kanji_frame = ctk.CTkFrame(frame, width=widget_size, height=widget_size, fg_color="white")
         kanji_display = ctk.CTkLabel(kanji_frame, text = kanji, text_color="black")
@@ -167,9 +182,9 @@ class App(ctk.CTk):
 
         kanji_frame.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
         kanji_display.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
-        self.kanjis_displayed_dico[self.n_kanjis_displayed] = kanji_frame # Récupère le widget créé dans un dictionnaire
+        self.kanjis_displayed_dico[button][self.n_kanjis_displayed[button]] = kanji_frame # Récupère le widget créé dans un dictionnaire
         
-        self.n_kanjis_displayed += 1
+        self.n_kanjis_displayed[button] += 1
     
 #    def kanji_tr_tabswitch_trigger(self, event) :
 #        kanji_frame = event.widget
