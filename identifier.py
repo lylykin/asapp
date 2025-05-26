@@ -28,7 +28,7 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         n += 1 # Conservant les meilleurs candidats pour le trait n uniquement, va comparer le trait n+1 (s'il existe)
         
     if len(kandict.keys()) == 0 : 
-        return "Error : no matches found"
+        return [] # "Error : no matches found"
     else :
         sorted_kanjis = sorted(kandict, key=kandict.get)
         return [k.name for k in sorted_kanjis] # Renvoie la liste des caractères sélectionnés, triés par score DTW croissant

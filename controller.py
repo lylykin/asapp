@@ -45,15 +45,18 @@ class Controller :
         x_points = []
         y_points = []
         offset_dotlist = {}
-        for stroke_points in dotlist.values():
-            for point in stroke_points:
-                x_points.append(point[0])
-                y_points.append(point[1])
-        x_min, y_min = min(x_points), min(y_points)
+        if x_points != [] : # Failsafe si aucun points tracés
+            for stroke_points in dotlist.values():
+                for point in stroke_points:
+                    x_points.append(point[0])
+                    y_points.append(point[1])
+            x_min, y_min = min(x_points), min(y_points)
         
-        for stroke,points in dotlist.items():
-            offset_points = [(p[0]-x_min,p[1]-y_min) for p in points]
-            offset_dotlist[stroke] = offset_points
+            for stroke,points in dotlist.items():
+                offset_points = [(p[0]-x_min,p[1]-y_min) for p in points]
+                offset_dotlist[stroke] = offset_points
+        else : 
+            offset_dotlist = dotlist
     
         return offset_dotlist
         

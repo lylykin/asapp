@@ -10,7 +10,7 @@ class TabView(ctk.CTkTabview):
         self.add(tab_name_list[1])
         self.set(tab_name_list[0]) # Tab principale ouverte par défaut
 
-        self.grid_propagate(True)
+        self.grid_propagate(False)
 
         # add widgets on tabs
         self.widget_compare_canvas_placement(master = self.tab(tab_name_list[0]))
@@ -81,11 +81,14 @@ class TabView(ctk.CTkTabview):
         # Position des widget dans la kanji_frame_dictionary
     #    self.kanji_display_dictionary.grid(row=0, column=0, sticky="nsew", ipadx=20, ipady=20)
 
+        # Défintion des variables
+        self.user_entry = ctk.StringVar(value="")
+        self.last_search = "" # Dernière recherche effectuée dans le dictionnaire
 
         # Définitions des Widget
         self.entry_frame = ctk.CTkFrame(master) # Stocke la zone de texte
         self.entry_kanji_found_frame = ctk.CTkScrollableFrame(master) #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
-        self.entry = ctk.CTkEntry(self.entry_frame, fg_color="white")
+        self.entry = ctk.CTkEntry(self.entry_frame, textvariable=self.user_entry, placeholder_text="Entrez un caractère ou un mot ici")
         self.search_entry_button = ctk.CTkButton(self.entry_frame, border_width=3, corner_radius=5, anchor="center", text="Chercher les caractères")
         self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray") # Changer à une couleur dynamique réactive au thème
         self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", underline=True)))

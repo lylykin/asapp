@@ -70,6 +70,7 @@ class App(ctk.CTk):
         self.tab.correct_button.bind("<ButtonPress-1>", self.clear_last_stroke)
         self.tab.compare_button.bind("<Button-1>", self.display_possible_kanjis)
         self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
+        self.tab.entry.bind("<Any-KeyPress>", self.search_dictionary)
 
     def canvas_new_stroke(self, event):
         '''
@@ -136,8 +137,11 @@ class App(ctk.CTk):
 
         client_strokes = self.controller.reduce_dotlist_size(self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
         possible_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
-        for kanji in possible_kanjis:
-            self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
+        if possible_kanjis != []:
+            for kanji in possible_kanjis:
+                self.kanji_frame_create(self.tab.kanji_found_frame, kanji)
+        #else : 
+            # Do something when no kanjis has been found, maybe display the numbers of found kanjis as '0' or display an error
 
     def kanji_frame_create(self, frame, kanji : str, widget_size = 40, padxy = 2) :
         '''
@@ -145,8 +149,8 @@ class App(ctk.CTk):
         S'adapte à la taille du contenant frame
         '''
         widget_and_pad_size = widget_size + padxy
-        frame_width = 110 # Supposé être frame["width"] mais marche pas BUG
-        frame_height = 200 # Supposé être frame["height"] mais marche pas BUG
+        frame_width = frame.winfo_width()
+        frame_height = frame.winfo_height()
         n_widget_large = frame_width // widget_and_pad_size
         n_widget_height = frame_height // widget_and_pad_size
         column = self.n_kanjis_displayed % n_widget_large
@@ -171,7 +175,8 @@ class App(ctk.CTk):
 #        kanji_frame = event.widget
 #        kanji = kanji_frame.kanji_display.text
 #        self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji)
-    
+    # USAGE ? 
+
     def switch_appearance(self, event):
         '''
         Change l'apparence actuelle de l'appli selon la valeur du toggle (light ou dark), se référer à asapp_theme.json
@@ -191,3 +196,21 @@ class App(ctk.CTk):
             
     def dico_widget(self, dico, event) : 
         pass
+    
+    def search_dictionary(self, event):
+        """
+        Appelée lorsque l'utilisateur appuie sur une touche du clavier, recherche parmis les kanjis existant ou dans le dictionnaire les informations à afficher
+        """
+        to_search = self.tab.entry.get
+        if self.tab.last_search != to_search:
+            self.tab.last_search = to_search
+            # INSERER LE PROCESS DE RECHERCHE
+            # Récupérer dans les variables ci-dessous les informations
+            found = True # Mettre une condition selon si un caractère ou mot trouvé dans le dico
+            if found :
+                kanji_name = "PLACEHOLDER name"
+                kanji_desc = "PLACEHOLDER desc"
+                self.tab.kanji_name_label.configure(text=kanji_name)
+                self.tab.desc_label.configure(text=kanji_desc)
+            else :
+                self.tab.kanji_name_label.configure(text="No results found")
