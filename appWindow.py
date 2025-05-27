@@ -10,7 +10,8 @@ class App(ctk.CTk):
         ctk.set_default_color_theme("assets/asapp_theme.json") # Mets un thème custom pour les widget par défaut
         super().__init__()
         self.title("Asapp")
-        self.geometry("700x550")
+        self.geometry("750x500")
+        self.resizable(False,False)
 
         self.controller = Controller()
         
@@ -22,7 +23,7 @@ class App(ctk.CTk):
 
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
         self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
-        self.n_kanjis_displayed = {} # Nombre de caractères affichés sur la droite de chaque tab, contient 1 valeur associée à chaque tab
+        self.n_kanjis_displayed = {} # Nombre de caractères affichés sur la droite de chaque tab, contient 1 entier associée à chaque tab
         self.kanjis_displayed_dico = {} # Caractères affichés sur la droite de chaque tab (numéro de frame : widget associé)
 
         self.widget_window_placement()
