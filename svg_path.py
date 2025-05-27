@@ -18,7 +18,7 @@ class Path:
 # this function will take a path string and return a list of points
 # the points will be in the form of a tuple (x, y)
 # Quality describes the number of points to be generated for a given path
-def convert_path_from_dstring(path_def, quality=5) -> Path:
+def convert_path_from_dstring(path_def, quality=9) -> Path:
     path = parse_path(path_def)
     res = Path()
     for l in range(quality+1):
