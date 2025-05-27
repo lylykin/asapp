@@ -60,7 +60,7 @@ class TabView(ctk.CTkTabview):
         # Définitions des Widget
         self.text_frame = ctk.CTkFrame(master) # Stocke la zone de texte
         self.text_kanji_found_frame = ctk.CTkScrollableFrame(master) #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
-        self.text_box = ctk.CTkTextbox(self.text_frame, fg_color="white", width=275, height=300, wrap='word', text_color='black') # Textbox est la version améliorée d'un simple Entry
+        self.text_box = ctk.CTkTextbox(self.text_frame, width=275, height=300, wrap='word') # Textbox est la version améliorée d'un simple Entry
         self.search_text_button = ctk.CTkButton(self.text_frame, border_width=3, corner_radius=5, anchor="center", text="Chercher les caractères")
         self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray") # Changer à une couleur dynamique réactive au thème
         self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", underline=True)))
