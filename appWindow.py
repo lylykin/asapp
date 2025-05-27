@@ -71,7 +71,7 @@ class App(ctk.CTk):
         self.tab.compare_button.bind("<Button-1>", lambda event : self.display_possible_kanjis('canvas'))
         self.tab.search_text_button.bind("<Button-1>", lambda event : self.display_possible_kanjis('text'))
         self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
-        self.tab.entry.bind("<Any-KeyPress>", self.search_dictionary)
+        self.tab.text_box.bind("<Any-KeyPress>", self.search_dictionary)
 
     def canvas_new_stroke(self, event):
         '''
