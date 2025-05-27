@@ -6,7 +6,7 @@ from svg_path import convert_path_from_dstring, Path
 from kanji import Kanji, KanjiDB
 
 def parse_kanji(chr: str, kanji_file: str) -> Kanji:
-    kanji = Kanji(chr, 0, [])
+    kanji = Kanji(chr, [], 0)
     
     # parse the dstring path
     doc = minidom.parse(f'data/kanji/{kanji_file}') 
