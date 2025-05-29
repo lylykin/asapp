@@ -74,10 +74,7 @@ class Dtw :
         #building the acm matrix
 
         c_mat = np.zeros((n, m))
-        for i in range(n):
-            for j in range(m):
-                if self.window[i][j] == 1:
-                    c_mat[i][j] = self.FastCoefAccCostMatrix(i, j)
+        c_mat[-1][-1] = self.FastCoefAccCostMatrix(n-1, m-1)
 
         self.acm = c_mat
 
