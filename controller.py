@@ -1,7 +1,7 @@
 from kanji import Kanji, KanjiDB
 from dictionary import Dictionary
 from svg_path import Path
-import identifier
+import opti_identifier
 from math import floor
 
 
@@ -16,7 +16,7 @@ class Controller :
         '''
         Recieves a set of strokes and outputs the closest matching kanji in the database based on a DTW algorithm
         '''
-        n_points = 6
+        n_points = 5
         kanji_2_id = Kanji("Unid",strokes= [])
         print(strokes)
         #ici, on doit changer pour n'avoir que 5 points
@@ -28,7 +28,7 @@ class Controller :
                 # Failsafe si la courbe avait moins de 5 points
                 p_stroke.points = s
             kanji_2_id.add_stroke(p_stroke)
-        return identifier.kanjiIdentifier(kanji_2_id)   
+        return opti_identifier.kanjiIdentifier(kanji_2_id)   
 
     def kanji_tr_tabswitch(self, tab, tab_name_list, kanji : str):
         '''

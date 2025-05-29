@@ -1,7 +1,7 @@
 from dtw import Dtw
 from kanji import Kanji, KanjiDB
 from svg_path import Path
-import math
+import operator
 
 
 
@@ -27,8 +27,10 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     if len(kandict.keys()) == 0 : 
         return "Error : no matches found"
     else :
-        sorted_kanjis = sorted(kandict, key=kandict.get)
-        return [k.name for k in sorted_kanjis] # Renvoie la liste des caractères sélectionnés, triés par score DTW croissant
+        for a, b in kandict.items() :
+            print(f"key : {a.name}, score : {b}\n")
+        sorted_kanjis = dict(sorted(kandict.items(), key=operator.itemgetter(1)))
+        return [k.name for k in sorted_kanjis.keys()] # Renvoie la liste des caractères sélectionnés, triés par score DTW croissant
         
 
 
@@ -50,9 +52,8 @@ def dtwKanji(kanji_2_id : Kanji, kandict : dict) :
     urmom
     """
     
-    keys = kandict.copy().keys()
+    keys = kandict.keys()
     stroke_number = kanji_2_id.stroke_count
-    dtw_min = math.inf
     
     #dtw d'un kanji : on fait le dtw stroke par stroke, puis on met que son score dtw est la moyenne des scores stroke par stroke
     for kan in keys:
@@ -60,17 +61,11 @@ def dtwKanji(kanji_2_id : Kanji, kandict : dict) :
         print(kan.name)
         
         for i in range (stroke_number) : 
-            somme += dtwStroke(kan.strokes[i],kanji_2_id.strokes[i])
+            somme += dtwStroke(kanji_2_id.strokes[i], kan.strokes[i])
             #si le score dépasse déjà la valeur min, ne sert à rien de la calculer, le score sera trop grand
-            if somme  > dtw_min : 
-                break           
+     
 
-        if somme<= dtw_min : 
-            kandict[kan] = somme
-            dtw_min = somme
-            
-        else : 
-            kandict.pop(kan)
+        kandict[kan] = somme
                           
     return kandict
     
