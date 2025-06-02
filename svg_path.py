@@ -2,15 +2,20 @@
 import svg.path
 from sys import exit
 from svg.path import parse_path
-
+import math
+import fast_math
+    
 class Path: 
-    points: list[(float, float)]
+    points: list[tuple[float, float]]
 
     def __init__(self):
         self.points = []
 
     def append(self, point):
         self.points.append(point)
+
+
+
 
 
 # use the svg.path library to parse the path string
@@ -89,3 +94,55 @@ def convert_path_from_dstring(path_def, quality=9) -> Path:
     res = simplify_path(res)
 
     return res
+
+def get_path_box(pathList: list[Path]) -> tuple[float, float, float, float]:
+    """
+    Get the bounding box of a list of paths.
+    Returns (x_min, y_min, x_max, y_max)
+    """
+    x_min = 0
+    y_min = 0
+    x_max = 109
+    y_max = 109
+    for path in pathList:
+        for point in path.points:
+            x, y = point
+            if x < x_min:
+                x_min = x
+            if y < y_min:
+                y_min = y
+            if x > x_max:
+                x_max = x
+            if y > y_max:
+                y_max = y
+
+
+    return (x_min, y_min, x_max, y_max)
+
+def constrain(pathList: list[Path], target_x_max = 109, target_y_max = 109):
+    
+    """
+    Resize the path to fit within the specified maximum dimensions.
+    """
+    current_box = get_path_box(pathList)
+    x_min, y_min, x_max_current, y_max_current = current_box
+
+    width = x_max_current - x_min 
+    height = y_max_current - y_min 
+    scaling = 0
+    if target_x_max / width < target_y_max / height: 
+        scaling = target_x_max / width 
+    else: 
+        scaling = target_y_max / height 
+    
+    for path in pathList:
+        for i, point in enumerate(path.points):
+            x, y = point
+            x = (x - x_min) * scaling
+            y = (y - y_min) * scaling
+            path.points[i] = (x, y)
+    
+
+    
+
+    
