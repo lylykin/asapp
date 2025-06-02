@@ -2,8 +2,7 @@ from dtw import Dtw
 from kanji import Kanji, KanjiDB
 from svg_path import Path
 import operator
-
-
+from path_extended import generate_extended_path, PathExtended
 
 def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     """
@@ -27,11 +26,20 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     if len(kandict.keys()) == 0 : 
         return "Error : no matches found"
     else :
-        for a, b in kandict.items() :
-            print(f"key : {a.name}, score : {b}\n")
-        sorted_kanjis = dict(sorted(kandict.items(), key=operator.itemgetter(1)))
-        return [k.name for k in sorted_kanjis.keys()] # Renvoie la liste des caractères sélectionnés, triés par score DTW croissant
-        
+
+
+        # sort in a list by the value and return a list of key sorted
+
+        for k,v in (kandict.items()):
+            print(f"kanji {k.name} : {v}")
+        sorted_kandict = sorted(kandict.copy().items(), key=operator.itemgetter(1))
+ 
+        sorted_kandict = [k[0].name for k in sorted_kandict]
+
+       # dump 
+       # for i in range(len(sorted_kandict)):
+        #     print(f"{i+1} : {sorted_kandict[i]}  ({kandict[sorted_kandict[i]]})")
+        return sorted_kandict
 
 
 def lerp(va, vb, factor):
@@ -41,11 +49,11 @@ def lerp(va, vb, factor):
     """
     return (1-factor) * va + factor * vb
     
-def dtwStroke(stroke : Path,comp_stroke : Path):
+def dtwStroke(stroke : PathExtended,comp_stroke : PathExtended):
     """
     returns the dtw score between 2 strokes
     """        
-    return Dtw(stroke.points, comp_stroke.points).dtw()
+    return Dtw(stroke.points_ex, comp_stroke.points_ex).dtw()
 
 def dtwKanji(kanji_2_id : Kanji, kandict : dict) : 
     """
@@ -55,13 +63,16 @@ def dtwKanji(kanji_2_id : Kanji, kandict : dict) :
     keys = kandict.keys()
     stroke_number = kanji_2_id.stroke_count
     
+    opti_stroke = []
+    for i in range(stroke_number):
+        opti_stroke.append(generate_extended_path(kanji_2_id.strokes[i]))
     #dtw d'un kanji : on fait le dtw stroke par stroke, puis on met que son score dtw est la moyenne des scores stroke par stroke
     for kan in keys:
         somme = 0
         print(kan.name)
         
         for i in range (stroke_number) : 
-            somme += dtwStroke(kanji_2_id.strokes[i], kan.strokes[i])
+            somme += dtwStroke(opti_stroke[i], generate_extended_path(kan.strokes[i]))
             #si le score dépasse déjà la valeur min, ne sert à rien de la calculer, le score sera trop grand
      
 

@@ -1,7 +1,7 @@
 import math
 import numpy as np
 
-
+from path_extended import PointExtended
 class Dtw : 
     """
     applies the Dynamic Time Warping algorithm
@@ -15,19 +15,20 @@ class Dtw :
         self.serie_X = compserie  
         self.serie_Y = refserie
 
-        if self.euclidian_dist(self.serie_X[0], self.serie_Y[0]) != 0 :
-            self.points_align()
+        #if self.euclidian_dist(self.serie_X[0], self.serie_Y[0]) != 0 :
+        #    self.points_align()
 
 
     def __str__(self):
         return f'{self.acm}'
     
-    def euclidian_dist(self, val_1 : tuple, val_2 : tuple) : 
+    def euclidian_dist(self, val_1 : PointExtended , val_2 : PointExtended) : 
         """
         Computes the euclidian distance between 2 points of a 2-d serie
         """
         
-        return abs(val_1[0]-val_2[0]) + abs(val_1[1]-val_2[1])
+        return (math.sqrt((val_1.x-val_2.x)**2 + (val_1.y-val_2.y)**2 + 5*(val_1.theta - val_2.theta)**2))
+    
     
     def compute_cost_matrix(self) : 
         """
@@ -154,6 +155,8 @@ class Dtw :
         
         window = [[0 for j in range(row)] for i in range(col)]
         
+        if col <= 1 or row <= 1 :
+            return [[1 for j in range(row)] for i in range(col)]    
         #creation de la diagonale
         for i in range(col) : 
             
@@ -164,6 +167,11 @@ class Dtw :
                 if abs(i*(row/col)-j) <= radius :
                     window[i][j] = 1
                     
+        # pretty print the window for debug
+        for i in range(len(window)):
+            for j in range(len(window[0])):
+                print(window[i][j], end=' ')
+            print()
         return window
 
     def points_align(self) :
