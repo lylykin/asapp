@@ -1,0 +1,7 @@
+# avoid counting data/kanji_db.json in insight in github 
+data/kanji_db.json linguist-generated=true 
+data/kvg-index.json linguist-generated=true 
+data/kanji/*.svg linguist-generated=true
+
+
+
