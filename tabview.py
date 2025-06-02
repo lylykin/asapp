@@ -3,14 +3,18 @@ from PIL import Image
     
 class TabView(ctk.CTkTabview):
     def __init__(self, master, tab_name_list, controller, **kwargs):
-        super().__init__(master, corner_radius=10, border_width= 10, **kwargs) # , height=400, width=700
+        super().__init__(master, corner_radius=10, border_width= 10, height=400, width=700, **kwargs) # 
         self.controller = controller
         # create tabs
         self.add(tab_name_list[0])
         self.add(tab_name_list[1])
         self.set(tab_name_list[0]) # Tab principale ouverte par défaut
 
-        self.grid_propagate(False)
+        # Définit la répartition globale de taille des frames pour les colonnes et lignes
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=2)
+        self.grid_propagate(True)
 
         # add widgets on tabs
         self.widget_compare_canvas_placement(master = self.tab(tab_name_list[0]))
@@ -28,8 +32,8 @@ class TabView(ctk.CTkTabview):
 
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(master) # Stocke le canvas
-        self.kanji_found_frame = ctk.CTkScrollableFrame(master) #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
-        self.main_canvas = ctk.CTkCanvas(self.canvas_frame, bg="white", borderwidth=3, cursor="tcross") 
+        self.kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray") #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
+        self.main_canvas = ctk.CTkCanvas(self.canvas_frame, bg="white", borderwidth=3, cursor="tcross", width=310, height=270) 
         self.compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Comparer le caractère")
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
         self.correct_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
@@ -46,8 +50,8 @@ class TabView(ctk.CTkTabview):
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
         self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=2)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=2)
         self.grid_propagate(True)
 
     def widget_dictionary_placement(self, master):
@@ -59,8 +63,8 @@ class TabView(ctk.CTkTabview):
 
         # Définitions des Widget
         self.text_frame = ctk.CTkFrame(master) # Stocke la zone de texte
-        self.text_kanji_found_frame = ctk.CTkScrollableFrame(master) #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
-        self.text_box = ctk.CTkTextbox(self.text_frame, width=275, height=300, wrap='word') # Textbox est la version améliorée d'un simple Entry
+        self.text_kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray") #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
+        self.text_box = ctk.CTkTextbox(self.text_frame, width=300, height=150, wrap='word') # Textbox est la version améliorée d'un simple Entry
         self.search_text_button = ctk.CTkButton(self.text_frame, border_width=3, corner_radius=5, anchor="center", text="Chercher les caractères")
         self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray") # Changer à une couleur dynamique réactive au thème
         self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", underline=True)))
@@ -81,8 +85,8 @@ class TabView(ctk.CTkTabview):
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
         self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=2)
-        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=2)
         self.grid_propagate(True)
 
         #DEBUG
