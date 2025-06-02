@@ -28,6 +28,8 @@ elif sys.argv[1] == "display":
     print(kanji.point_count())
     
     for stroke in kanji.strokes:
+        for p in range(len(stroke.points)):
+            stroke.points[p] = (stroke.points[p][0], -stroke.points[p][1])
         plt.plot(*zip(*stroke.points))
     
     plt.show()
