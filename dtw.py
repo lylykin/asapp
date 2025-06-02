@@ -45,7 +45,10 @@ class Dtw :
 
         for i in range(len(self.serie_Y)):
             for j in range(len(self.serie_X)):
-                mat[i][j] = self.euclidian_dist(self.serie_Y[i], self.serie_X[j])
+                if(self.window is not None and self.window[i][j] == 0):
+                    mat[i][j] = math.inf
+                else:
+                    mat[i][j] = self.euclidian_dist(self.serie_Y[i], self.serie_X[j])
         
         self.cm = mat
     
@@ -75,15 +78,8 @@ class Dtw :
         #creation de la fenetre de recherche
         
 
-        self.window = self.create_window(len(self.serie_Y), len(self.serie_X))
+        # self.window = self.create_window(len(self.serie_Y), len(self.serie_X))
 
-        # dump window for debug, with 0 and 1 
-        
-       # for i in range(len(self.window)):
-       #     for j in range(len(self.window[0])):
-      #          print(self.window[i][j], end=' ')
-      #      print()
-       
         #building the acm matrix
         c_mat = np.zeros((n, m))
         c_mat[-1][-1] = self.fast_coef_acc_cost_matrix(n-1, m-1, ceiling)
@@ -122,7 +118,7 @@ class Dtw :
             return math.inf
     
         else : 
-            if self.cm[i][j] >= ceiling:
+            if self.cm[i][j] > ceiling:
                return math.inf
             
             new_ceiling = ceiling - self.cm[i][j]
@@ -137,6 +133,7 @@ class Dtw :
         try :
             return self.acm[-1][-1]
         except :            
+            self.window = self.create_window(len(self.serie_Y), len(self.serie_X))
             self.compute_cost_matrix()
             self.fast_compute_acc_cost_matrix(ceiling)         
             return self.acm[-1][-1]
@@ -153,7 +150,7 @@ class Dtw :
     #            window[r][c] = 1
                 
 
-    def create_window(self, col : int, row : int, radius = 3):
+    def create_window(self, col : int, row : int, radius = 5):
         """
         returns a search window depending of a radius
         row : le nombre d'éléments dans une ligne

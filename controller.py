@@ -18,7 +18,7 @@ class Controller :
         '''
         Recieves a set of strokes and outputs the closest matching kanji in the database based on a DTW algorithm
         '''
-        n_points = 6 
+        n_points = 9
         kanji_2_id = Kanji("Unid",strokes= [])
         print(strokes)
         #ici, on doit changer pour n'avoir que 5 points
