@@ -121,7 +121,7 @@
   "CTkTextbox": {
     "corner_radius": 6,
     "border_width": 0,
-    "fg_color": ["gray100", "gray20"],
+    "fg_color": ["#F9F9FA", "#343638"],
     "border_color": ["#979DA2", "#565B5E"],
     "text_color": ["gray14", "gray84"],
     "scrollbar_button_color": ["gray55", "gray41"],

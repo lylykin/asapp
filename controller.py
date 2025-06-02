@@ -3,7 +3,7 @@ from dictionary import Dictionary
 from svg_path import Path
 import identifier
 from math import floor
-
+from dictionary import Dictionary
 
 
 class Controller :
@@ -11,6 +11,7 @@ class Controller :
     def __init__(self, dico : Dictionary = Dictionary()):
         self.reduction_value = 10 # Distance euclidienne en dessous de laquelle les points tracés sont ignorés
         self.dico = dico
+        self.translator = Dictionary()
 
     def identify(self,strokes):
         '''
@@ -88,4 +89,17 @@ class Controller :
         vecteur = [x2-x1, y2-y1]
         return (vecteur[0]**2 + vecteur[1]**2)**0.5
 
+    def translate_describe(self, word):
+        '''
+        Renvoie la traduction du mot dans l'autre langue ainsi que la description du mot sous la forme (trad, desc)
+        '''
+        trad = self.translator.get_fr_translation(word) # Récupère la traduction fr du mot jap et sa desc
+        desc = self.translator.get_meaning("fr", word)
+        if trad == None: # Si aucune traduction trouvée, cherche la traduction jap du mot fr et sa desc
+            trad = self.translator.get_jp_translation(word)
+            desc = self.translator.get_meaning("ja", word)
+            if trad == None: # Si aucune traduction trouvée, le mot est considéré inexistant, renvoie une erreur
+                trad = "Erreur : aucune correspondance trouvée"
+                desc = ""
+        return trad, desc
 
