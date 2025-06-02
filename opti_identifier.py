@@ -59,13 +59,27 @@ def dtwStroke(stroke : PathExtended,comp_stroke : PathExtended, ceiling: float) 
     """        
     return Dtw(stroke.points_ex, comp_stroke.points_ex).dtw(ceiling)
 
+
+def kanji_simplicity(kanji: Kanji):
+    # return kanji point count: 
+    pt_count = 0
+    for stroke in kanji.strokes:
+        pt_count += len(stroke.points)
+    return pt_count
+
 def dtwKanji(kanji_2_id : Kanji, kandict : dict) : 
     """
     urmom
     """
     
     res = {}
-    keys = kandict.keys()
+    # sort the keys by point count
+    
+    keys = list(kandict.keys())
+    keys.sort(key=kanji_simplicity)  # sort by point count
+
+    # sort the keys by point count
+    # sort key by point count
     stroke_number = kanji_2_id.stroke_count
     
     opti_stroke = []
@@ -82,7 +96,7 @@ def dtwKanji(kanji_2_id : Kanji, kandict : dict) :
         for i in range (stroke_number) : 
             somme += dtwStroke(opti_stroke[i], generate_extended_path(kan.strokes[i]), last_max_v)
             #si le score dépasse déjà la valeur min, ne sert à rien de la calculer, le score sera trop grand
-     
+        print(f"Score for {kan.name} : {somme}")
         if len(res.keys()) < 20:
             res[kan] = somme
         else: 
