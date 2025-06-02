@@ -3,7 +3,7 @@ from dictionary import Dictionary
 from svg_path import Path, simplify_path, constrain
 import opti_identifier as identifier
 from math import floor
-from dictionary import Dictionary
+
 
 
 
