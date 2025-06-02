@@ -56,7 +56,7 @@ def dtwStroke(stroke : Path, stroke_number : int, kandict : dict):
     
     summed = 0
     for kan in keys:
-        kandict[kan] += Dtw(stroke.points, kan.strokes[stroke_number].points).dtw()
+        kandict[kan] += Dtw(kan.strokes[stroke_number].points,stroke.points).dtw()
         summed += kandict[kan]
       
     dtw_min = min(kandict.values()) # Relève le score le plus bas (meilleure corrélation)

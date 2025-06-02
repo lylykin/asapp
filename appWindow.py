@@ -11,7 +11,7 @@ class App(ctk.CTk):
         super().__init__()
         self.title("Asapp")
         self.geometry("750x500")
-        self.resizable(False,False)
+        self.resizable(False,True)
 
         self.controller = Controller()
         
@@ -54,8 +54,8 @@ class App(ctk.CTk):
         self.appearance_switch.grid(row=2, column=0, sticky="s")
 
         # Définit la répartition globale de taille de l'application pour les colonnes et lignes
-        self.grid_rowconfigure(1, weight=15)
-        self.grid_columnconfigure(1, weight=15)
+        self.grid_rowconfigure(1, weight=20)
+        self.grid_columnconfigure(1, weight=20)
         self.grid_rowconfigure((0,2,3), weight=1)
         self.grid_columnconfigure(0, weight=1)
 
@@ -225,7 +225,7 @@ class App(ctk.CTk):
             found = True # Mettre une condition selon si un caractère ou mot trouvé dans le dico
             if found :
                 kanji_name = "PLACEHOLDER name"
-                kanji_desc = "PLACEHOLDER desc"
+                kanji_desc = "PLACEHOLDER desc"+"\n."*10
                 self.tab.kanji_name_label.configure(text=kanji_name)
                 self.tab.desc_label.configure(text=kanji_desc)
             else :
