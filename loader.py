@@ -33,7 +33,9 @@ def compute_kanji_cache():
 
     length = len(d.keys())
     for kanjis in d.keys():
-
+        # only compute つ 
+  #      if kanjis != "あ":
+  #          continue
         print(f"adding kanji: {kanjis} with file: {d[kanjis][-1]} ({i}/{length})")
     
         kanji_db[kanjis] = parse_kanji(kanjis, d[kanjis][-1])

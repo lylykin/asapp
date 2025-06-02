@@ -49,6 +49,7 @@ class KanjiDB(object):
         for k, v in new_kanji_db.items():
             if k not in self._kanji_db:
                 strokes = []
+                
                 for stroke in v["strokes"]:
                     strokes.append(Path())
                     for point in stroke["points"]:

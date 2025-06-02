@@ -23,9 +23,18 @@ class Controller :
         print(strokes)
         #ici, on doit changer pour n'avoir que 5 points
 
+        paths = []
         for s in strokes.values():
             p_stroke = Path()
             p_stroke.points = s
+            p_stroke = simplify_path(p_stroke)
+            paths.append(p_stroke)
+                
+
+        constrain(paths)
+
+
+        for p_stroke in paths:
             
             p_stroke = simplify_path(p_stroke)
 
@@ -39,7 +48,6 @@ class Controller :
             # final len: 
             print(f"Stroke {len(kanji_2_id.strokes)} : {len(p_stroke.points)} points")
 
-        constrain(kanji_2_id.strokes)
         return identifier.kanjiIdentifier(kanji_2_id)   
 
     def kanji_tr_tabswitch(self, tab, tab_name_list, kanji : str):

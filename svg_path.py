@@ -75,7 +75,24 @@ def simplify_path(path: Path) -> Path:
             if dist < 1.5:
                 # If the distance is less than 0.5, we can remove the center point
                 simplified.pop(-2)
-                #print(f"Removed point {center} due to distance {dist:.2f} < 0.5")
+                print(f"Removed point {center} due to distance {dist:.2f} < 0.5")
+            #else: 
+            #    theta_1 = fast_math.fast_atan2(previous[1] - center[1], previous[0] - center[0])
+            #    theta_2 = fast_math.fast_atan2(next[1] - center[1], next[0] - center[0])
+            #    # If the angle between the previous and next points is too small, we can remove the center point
+            #    if abs(theta_1 - theta_2) < 0.1:
+            #        simplified.pop(-2)
+           
+
+    # print svg format:
+    
+    for i, point in enumerate(raw):
+        x, y = point
+        if i == 0:
+            print(f"M {x} {y}", end=" ")
+        else:
+            print(f"L {x} {y}", end=" ")
+    print("Z")  # Close the path #        print(f"Removed point {center} due to angle {abs(theta_1 - theta_2):.2f} < 0.1")
 
             
   #  simplified.append(raw[-1])
