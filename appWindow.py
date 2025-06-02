@@ -173,7 +173,7 @@ class App(ctk.CTk):
         row = self.n_kanjis_displayed[button] // n_widget_large
 
         kanji_frame = ctk.CTkFrame(frame, width=widget_size, height=widget_size, fg_color="white")
-        kanji_display = ctk.CTkLabel(kanji_frame, text = kanji, text_color="black")
+        kanji_display = ctk.CTkLabel(kanji_frame, text = kanji, text_color="black", font=(ctk.CTkFont(family="comic sans ms", size=20)))
 
         kanji_frame.grid(row = row, column = column, padx=padxy, pady=padxy, sticky="nsew")
         kanji_frame.grid_propagate(False)  # Empêche la frame de rétrécir
