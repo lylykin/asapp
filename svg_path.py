@@ -4,7 +4,6 @@ from sys import exit
 from svg.path import parse_path
 import math
 import fast_math
-    
 class Path: 
     points: list[tuple[float, float]]
 
@@ -42,8 +41,31 @@ def raw_svg_path(path_def: Path) -> Path:
     return p 
 
 
+
+
+def douglas_peucker(points, epsilon):
+    dmax = 0
+    index = 0
+
+    end = len(points) - 1
+    for i in range(1, end):
+        d = distance_to_line(points[0], points[end], points[i])
+        if d > dmax:
+            index = i
+            dmax = d
+    
+    if dmax >= epsilon:
+        # Recursive call
+        left = douglas_peucker(points[:index + 1], epsilon)
+        right = douglas_peucker(points[index:], epsilon)
+
+        return left[:-1] + right
+    else:
+        return [points[0], points[end]]
+    
 # source: https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
 def distance_to_line(pa1, pa2, pb):
+    
     """
     Calculate the distance from point pb to the line defined by points pa1 and pa2.
     """
@@ -55,27 +77,19 @@ def distance_to_line(pa1, pa2, pb):
     B = pa1[0] - pa2[0] # x1 - x2
     C = pa2[0] * pa1[1] - pa1[0] * pa2[1] # x2*y1 - x1*y2
 
+
     # Distance from point to line
     # return |Ax + By + C| / sqrt(A^2 + B^2)
     return abs(A * pb[0] + B * pb[1] + C) / ((A**2 + B**2) ** 0.5)
 
 
+
 def simplify_path(path: Path) -> Path:
     raw = path.points
     simplified = []
-    for i in range(len(raw)):
-        simplified.append(raw[i])
 
-        if i >= 2:
-            next = simplified[-1]
-            center = simplified[-2]
-            previous = simplified[-3]
-            # Calculate the distance from the center point to the line defined by previous and next points
-            dist = distance_to_line(previous, next, center)
-            if dist < 1.5:
-                # If the distance is less than 0.5, we can remove the center point
-                simplified.pop(-2)
-                print(f"Removed point {center} due to distance {dist:.2f} < 0.5")
+    simplified = douglas_peucker(raw,3)  # Simplify the path using the Douglas-Peucker algorithm with a threshold of 1.5
+    
             #else: 
             #    theta_1 = fast_math.fast_atan2(previous[1] - center[1], previous[0] - center[0])
             #    theta_2 = fast_math.fast_atan2(next[1] - center[1], next[0] - center[0])
