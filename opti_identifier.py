@@ -35,10 +35,14 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         sorted_kandict = sorted(kandict.copy().items(), key=operator.itemgetter(1))
  
         sorted_kandict = [k[0].name for k in sorted_kandict]
-
        # dump 
        # for i in range(len(sorted_kandict)):
         #     print(f"{i+1} : {sorted_kandict[i]}  ({kandict[sorted_kandict[i]]})")
+        print("Sorted kandict :")
+        for i, k in enumerate(sorted_kandict):
+            print(f"{i+1} : {k}")
+        
+        sorted_kandict = sorted_kandict[:20]  # Keep only the 10 closest kanjis
         return sorted_kandict
 
 
@@ -49,17 +53,18 @@ def lerp(va, vb, factor):
     """
     return (1-factor) * va + factor * vb
     
-def dtwStroke(stroke : PathExtended,comp_stroke : PathExtended):
+def dtwStroke(stroke : PathExtended,comp_stroke : PathExtended, ceiling: float) -> float:
     """
     returns the dtw score between 2 strokes
     """        
-    return Dtw(stroke.points_ex, comp_stroke.points_ex).dtw()
+    return Dtw(stroke.points_ex, comp_stroke.points_ex).dtw(ceiling)
 
 def dtwKanji(kanji_2_id : Kanji, kandict : dict) : 
     """
     urmom
     """
     
+    res = {}
     keys = kandict.keys()
     stroke_number = kanji_2_id.stroke_count
     
@@ -67,18 +72,35 @@ def dtwKanji(kanji_2_id : Kanji, kandict : dict) :
     for i in range(stroke_number):
         opti_stroke.append(generate_extended_path(kanji_2_id.strokes[i]))
     #dtw d'un kanji : on fait le dtw stroke par stroke, puis on met que son score dtw est la moyenne des scores stroke par stroke
+
+    last_max_v = float("inf")
+    
     for kan in keys:
         somme = 0
         print(kan.name)
         
         for i in range (stroke_number) : 
-            somme += dtwStroke(opti_stroke[i], generate_extended_path(kan.strokes[i]))
+            somme += dtwStroke(opti_stroke[i], generate_extended_path(kan.strokes[i]), last_max_v)
             #si le score dépasse déjà la valeur min, ne sert à rien de la calculer, le score sera trop grand
      
+        if len(res.keys()) < 20:
+            res[kan] = somme
+        else: 
 
-        kandict[kan] = somme
+            max_v  = float("-inf")
+            max_id = 0
+            for k in res.keys():
+                # select the max one, swap if needed 
+                if res[k] > max_v:
+                    max_v = res[k]
+                    max_id = k
+            if somme < max_v:
+                last_max_v = max_v
+                res.pop(max_id)
+                res[kan] = somme
+        
                           
-    return kandict
+    return res
     
     
     

@@ -27,7 +27,11 @@ class Dtw :
         Computes the euclidian distance between 2 points of a 2-d serie
         """
         
-        return (math.sqrt((val_1.x-val_2.x)**2 + (val_1.y-val_2.y)**2 + 5*(val_1.theta - val_2.theta)**2))
+        # knowing that:
+        # delta theta is between 0 and 2pi, 
+        # delta x is between 0 and 109 but, it will be generally between 0 and 50 
+        # so to have an impact, I think delta theta should be multiplied by 15 or 20
+        return (math.sqrt((val_1.x-val_2.x)**2 + (val_1.y-val_2.y)**2 + (5*(val_1.theta - val_2.theta))**2))
     
     
     def compute_cost_matrix(self) : 
@@ -61,7 +65,7 @@ class Dtw :
 
         self.acm = c_mat
 
-    def fast_compute_acc_cost_matrix(self): 
+    def fast_compute_acc_cost_matrix(self, ceiling): 
         """
         Compute the accumulation cost matrix.
         """ 
@@ -82,7 +86,7 @@ class Dtw :
        
         #building the acm matrix
         c_mat = np.zeros((n, m))
-        c_mat[-1][-1] = self.fast_coef_acc_cost_matrix(n-1, m-1)
+        c_mat[-1][-1] = self.fast_coef_acc_cost_matrix(n-1, m-1, ceiling)
 
         self.acm = c_mat
 
@@ -103,7 +107,7 @@ class Dtw :
     #        return self.cm[i][j] + min(self.CoefAccCostMatrix(i-1, j), self.CoefAccCostMatrix(i, j-1), self.CoefAccCostMatrix(i-1, j-1))
 
     
-    def fast_coef_acc_cost_matrix(self, i, j):
+    def fast_coef_acc_cost_matrix(self, i, j, ceiling):
         """"
         returns the coefs of the accumulation cost matrix
         """
@@ -118,9 +122,13 @@ class Dtw :
             return math.inf
     
         else : 
-            return self.cm[i][j] + min(self.fast_coef_acc_cost_matrix(i-1, j), self.fast_coef_acc_cost_matrix(i, j-1), self.fast_coef_acc_cost_matrix(i-1, j-1))            
+            if self.cm[i][j] >= ceiling:
+               return math.inf
+            
+            new_ceiling = ceiling - self.cm[i][j]
+            return self.cm[i][j] + min(self.fast_coef_acc_cost_matrix(i-1, j, new_ceiling ), self.fast_coef_acc_cost_matrix(i, j-1, new_ceiling), self.fast_coef_acc_cost_matrix(i-1, j-1, new_ceiling))            
 
-    def dtw(self):
+    def dtw(self, ceiling):
         """
         returns the dtw score for two series
         """
@@ -128,10 +136,9 @@ class Dtw :
         #bon j'ai pas implémenté le fast donc useless mdr
         try :
             return self.acm[-1][-1]
-        
         except :            
             self.compute_cost_matrix()
-            self.fast_compute_acc_cost_matrix()         
+            self.fast_compute_acc_cost_matrix(ceiling)         
             return self.acm[-1][-1]
         
     #def update_window(self, window, update_value) : 
