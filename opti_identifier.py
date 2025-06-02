@@ -9,6 +9,9 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     returns the closest kanjis according to dtw, compares kanji_2_id and the kanjis in the file
     Parameters : kanji_2_id (kanji) and kanji_file (json file) treated like an singleton (containing all the possible kanjis to compare)
     """
+    if kanji_2_id == Kanji("Unid",strokes= []) : # Test pour éviter de comparer un kanji vide
+        "Error : no matches found"
+        return [] # Kanji vide, aucun résultat
     
     kandict = {}
     stroke_count = kanji_2_id.stroke_count
@@ -24,7 +27,8 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     kandict = dtwKanji(kanji_2_id, kandict) # Comparer le trait n du kanji_2_id au trait n de tous les kanji de kandict (même nombre de trait)
         
     if len(kandict.keys()) == 0 : 
-        return "Error : no matches found"
+        print("Error : no matches found")
+        return []
     else :
 
 

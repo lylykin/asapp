@@ -21,14 +21,15 @@ class Controller :
         n_points = 9
         kanji_2_id = Kanji("Unid",strokes= [])
         print(strokes)
-        #ici, on doit changer pour n'avoir que 5 points
+        #ici, on doit changer pour n'avoir que n_points points
 
         paths = []
         for s in strokes.values():
             p_stroke = Path()
             p_stroke.points = s
-            p_stroke = simplify_path(p_stroke)
-            paths.append(p_stroke)
+            if s != []: #failsafe et opti si liste de points vide, ajoute que les listes de points non vides
+                p_stroke = simplify_path(p_stroke)
+                paths.append(p_stroke)
                 
 
         constrain(paths)
@@ -37,7 +38,6 @@ class Controller :
         for p_stroke in paths:
             
             p_stroke = simplify_path(p_stroke)
-
 
             s = p_stroke.points
             if len(s)>n_points:

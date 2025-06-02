@@ -37,6 +37,7 @@ class TabView(ctk.CTkTabview):
         self.compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Comparer le caractère")
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
         self.correct_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
+        self.n_found_label = ctk.CTkLabel(self.kanji_found_frame, text="")
 
         # Position des frame dans la tab
         self.canvas_frame.grid(row=0,column=0, sticky="nsew")
@@ -47,6 +48,9 @@ class TabView(ctk.CTkTabview):
         self.compare_button.grid(row=1, column = 0, columnspan=2, padx=16, pady=5, sticky="ew") 
         self.clear_button.grid(row=2, column=1, padx=4, pady=5, sticky="ew")
         self.correct_button.grid(row=2,column=0,padx=4, pady=5,sticky = "ew")
+
+        # Position des widget dans la canvas_frame
+        self.n_found_label.grid(row=0,column=0, sticky='nsew')
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
         self.grid_rowconfigure(0, weight=1)

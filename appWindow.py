@@ -144,6 +144,7 @@ class App(ctk.CTk):
             client_strokes = self.controller.reduce_dotlist_size(self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
             found_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
             frame = self.tab.kanji_found_frame
+
         
         if button == 'text' :
             # Splits input text by whitespace, then makes a single list of every character
@@ -155,9 +156,13 @@ class App(ctk.CTk):
                     found_kanjis.append(k)
             frame = self.tab.text_kanji_found_frame
 
-        print(found_kanjis)
-        for kanji in found_kanjis:
-            self.kanji_frame_create(frame, kanji, button)
+        if found_kanjis == [] : # Si aucun résultat
+            self.tab.n_found_label.configure(text="Aucun résultat trouvé")
+        else :
+            self.tab.n_found_label.configure(text="")
+            print(found_kanjis)
+            for kanji in found_kanjis:
+                self.kanji_frame_create(frame, kanji, button)
 
     def kanji_frame_create(self, frame, kanji : str, button, widget_size = 40, padxy = 2) :
         '''
