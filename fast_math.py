@@ -3,7 +3,7 @@ import numpy as np
 
 # calcul de la racine carrée inverse 
 # https://ajcr.net/fast-inverse-square-root-python/ 
-def numpy_isqrt(number):
+def inv_sqrt(number):
     threehalfs = 1.5
     x2 = number * 0.5
     y = np.float32(number)

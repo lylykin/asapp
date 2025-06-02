@@ -31,7 +31,10 @@ class Dtw :
         # delta theta is between 0 and 2pi, 
         # delta x is between 0 and 109 but, it will be generally between 0 and 50 
         # so to have an impact, I think delta theta should be multiplied by 15 or 20
-        return (math.sqrt((val_1.x-val_2.x)**2 + (val_1.y-val_2.y)**2 + (5*(val_1.theta - val_2.theta))**2))
+        return (math.sqrt((val_1.x-val_2.x)**2 + 
+                          (val_1.y-val_2.y)**2 + 
+                          (5*(val_1.theta - val_2.theta))**2) +
+                        (5 * (val_1.curvature - val_2.curvature))**2 )
     
     
     def compute_cost_matrix(self) : 
