@@ -1,41 +1,55 @@
-from PyMultiDictionary import MultiDictionary
+import asyncio
+from googletrans import Translator
+from pylexique import Lexique383
 
 #bon en fait la librairie fait tout, pas besoin de ca rip mon code 
 class Dictionary() : 
-    multi_dico : MultiDictionary
+    translator : Translator
+    lexique : Lexique383
 
 #je considère que le dictionnaire fait francais/ japonais
     
     def __init__(self):
-        self.multi_dico = MultiDictionary()
-        
-    def get_fr_translation(self, j_word : str) : 
+        self.translator = Translator(service_urls=['translate.google.com'])
+        self.lexique = Lexique383()
+
+    async def get_translation(self, word :str):
+        translation = None
+        detection = await self.translator.detect(word)
+        print(detection)
+        lang = detection.lang
+        conf = detection.confidence
+        if conf < 0.3 : # Confiance insuffisante pour la langue
+            print("Erreur : Langue non identifiée")
+        else :
+            if lang == "fr" : 
+                translation = await self.get_jp_translation(word)
+            elif lang == "ja" :
+                translation = await self.get_fr_translation(word)
+        return translation
+      
+    async def get_fr_translation(self, word : str) : 
         """returns the french translation in the dico"""
         #errors are supported by the lib
-        return self.multi_dico.translate('ja', j_word, to='fr')
+        return await self.translator.translate(word, dest="fr", src="ja")
         
-    def get_jp_translation(self, fr_word :str) : 
+    async def get_jp_translation(self, word :str) : 
         """returns the japanese translation in the dico"""
-        return self.multi_dico.translate("fr", fr_word, to="ja")
+        return await self.translator.translate(word, dest="ja", src="fr")
     
-    def get_meaning(self, language:str, word:str):
+    def get_lexicon(self, fr_word:str):
         """
-        returns the description of the current word
-        meaning renvoie un tuple contenant
-        - une liste de string (caracteristics_list) : ['verb','noun',]
-        - un string avec 2 phrases séparées par un point, anglais puis la langue du mot
-        - un string vide
+        returns the lexicon of the current french word
         """
-        caracteristics_list, eng_lang_desc, empty = self.multi_dico.meaning(language, word)
-        desc_items = eng_lang_desc.split('.')
-        possible_eng_descs = []
-        for item in desc_items :
-            if item.isascii():
-                possible_eng_descs.append(item)
-        return possible_eng_descs, eng_lang_desc
+        word_lexicon = self.lexique.get_lex(fr_word)
+        return word_lexicon
 
-#debugdic = Dictionary()
-#print(debugdic.get_jp_translation("C"))
-#print(debugdic.get_fr_translation("車"))
-#print(debugdic.get_meaning("ja","車"))
-# C'est de la grosse merde ce dictionnaire, vraiment cette lib elle dégage               
+async def main():
+    debugdic = Dictionary()
+    print(await debugdic.get_jp_translation("bonjour"))
+    print(await debugdic.get_fr_translation("車"))
+    print(await debugdic.get_translation("bonjour")) # Détecte l'anglais à chaque fois pour raison obscure et prend pour source l'anglais
+    print(debugdic.get_lexicon("bonjour"))
+
+if __name__ == "__main__":
+    asyncio.run(main()) # Je suis terrifé par l'utilisation de fonctions asynchrones
