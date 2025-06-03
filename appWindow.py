@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tabview import TabView
 from PIL import Image
 from controller import Controller
-from dictionary import Dictionary
+from kanji_teach import writeTeacher
 
 
 class App(ctk.CTk):
@@ -15,12 +15,11 @@ class App(ctk.CTk):
         self.resizable(False,True)
 
         self.controller = Controller()
-        self.dictionary = Dictionary()
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list, self.controller)
         for tab_name in self.tab_name_list:
-            self.tab._tab_dict[tab_name].grid_configure(ipady=300)
+            self.tab._tab_dict[tab_name].grid_configure(ipady=10)
         self.tab._segmented_button.configure(font=ctk.CTkFont(family="Arial", size=12, weight="bold"))
 
         self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
@@ -41,8 +40,8 @@ class App(ctk.CTk):
         # Définitions des Widget
         logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(50, 50))
         # ctk.CTkImage(light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
-        self.logo_label = ctk.CTkLabel(self, image=logo, text="") # display image with a CTkLabel
-        self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter")
+        self.logo_label = ctk.CTkLabel(self, image=logo, text="")  # display image with a CTkLabel
+        self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter", width=125, height=20)
         #self.appearance_switch = ctk.CTkSwitch(master, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearance)
         self.appearance_switch = ctk.CTkSwitch(self, textvariable=self.appearance, variable=self.appearance, offvalue="light", onvalue="dark", text="theme")
 
@@ -195,7 +194,8 @@ class App(ctk.CTk):
             display_tab = "text"
 
         widget_and_pad_size = widget_size + padxy
-        frame_width = frame.winfo_width() - 100 # Prise en compte du slider de la frame pour l'affichage des widgets
+        frame_width = frame.winfo_width()
+        frame_height = frame.winfo_height()
         n_widget_large = frame_width // widget_and_pad_size
         column = self.n_kanjis_displayed[display_tab] % n_widget_large
         row = self.n_kanjis_displayed[display_tab] // n_widget_large
@@ -237,9 +237,7 @@ class App(ctk.CTk):
         recherche parmis les kanjis existant ou dans le dictionnaire les informations à afficher
         """
         to_search = self.tab.text_box.get(1.0,ctk.END)
-        to_search_failsafe_list = to_search.split(sep='\n') # Coupe la liste en ne s'intéressant qu'à la partie avant tout retour à la ligne (\n)
-        to_search = to_search_failsafe_list[0]
-        if self.tab.last_search != to_search and to_search !="":
+        if self.tab.last_search != to_search:
             self.tab.last_search = to_search
             kanji_name, lang = self.dictionary.translate_language(to_search)
             if lang == "ja":
@@ -260,3 +258,11 @@ class App(ctk.CTk):
         self.tab.text_box.delete(0.0,ctk.END) 
         self.tab.text_box.insert(0.0,kanji) # Efface la text_box puis lui rajoute la valeur cliquée
         self.display_boxes("text")
+
+    def kanji_check_writing(self, event) : 
+        """
+        ce que je veux quand on est en mode apprendre : 
+        quand l'user trace un kanji : récupérer la liste des traits
+        créer une instance de write teacher writeTeacher
+        appeler writeTeacher.write_teacher(kanji que l'user veut apprendre, liste des traits qu'il a tracé)
+        """

@@ -1,7 +1,7 @@
 #le but de ce fichier est de permettre à l'user d'apprendre à écrire un kanji voulu.
 from kanji import Kanji
 from dtw import Dtw
-import time
+
 
 #bon, en vrai plutot à mettre dans la partie appwindow directement, n'a pas de sens comme ca
 
