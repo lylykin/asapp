@@ -71,7 +71,7 @@ class TabView(ctk.CTkTabview):
         self.text_box = ctk.CTkTextbox(self.text_frame, width=300, height=150, wrap='word') # Textbox est la version améliorée d'un simple Entry
         self.search_text_button = ctk.CTkButton(self.text_frame, border_width=3, corner_radius=5, anchor="center", text="Chercher les caractères")
         self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray") # Changer à une couleur dynamique réactive au thème
-        self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", underline=True)))
+        self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", weight="bold")))
         self.desc_label = ctk.CTkLabel(self.desc_frame, text="")
         
         # Position des frame dans la tab
@@ -102,7 +102,7 @@ class TabView(ctk.CTkTabview):
         EN DEVELOPPEMENT
         '''
         #self.kanji_display_dictionary.configure(text=kanji)
-        kanji_desc = "Yosh la description" # A terme : kanji.desc
-        kanji_name = "Le nom de fou"
+        kanji_desc = ""
+        kanji_name = ""
         self.desc_label.configure(text=kanji_desc)
         self.kanji_name_label.configure(text=kanji_name)

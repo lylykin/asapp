@@ -29,8 +29,18 @@ class Dictionary() :
         translated = self.async2sync(self._get_translation(jp_word, 'fr'))
         return translated.text
     
+    def translate_language(self, word):
+        lang = self.async2sync(self.trans.detect(word))
+        lang = lang.lang
+        if lang == "ja":
+            return self.get_fr_translation(word), lang
+        else:
+            return self.get_jp_translation(word), "fr"
+        #else :
+        #    return "Aucun résultat", ""
+   
 #debugdic = Dictionary()
 #print(debugdic.get_jp_translation("voiture"))
 #print(debugdic.get_fr_translation("車"))
-#print(debugdic.get_meaning("ja","車"))
+#print(debugdic.translate_language("comment"))
 # C'est de la grosse merde ce dictionnaire, vraiment cette lib elle dégage               
