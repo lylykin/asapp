@@ -2,6 +2,7 @@ import customtkinter as ctk
 from tabview import TabView
 from PIL import Image
 from controller import Controller
+from kanji_teach import writeTeacher
 
 
 class App(ctk.CTk):
@@ -252,3 +253,11 @@ class App(ctk.CTk):
             self.tab.kanji_name_label.configure(text=kanji_name)
             self.tab.desc_label.configure(text=kanji_desc)
             #self.tab.kanji_name_label.configure(text="No results found") # Cas où aucun résultat trouvé
+    
+    def kanji_check_writing(self, event) : 
+        """
+        ce que je veux quand on est en mode apprendre : 
+        quand l'user trace un kanji : récupérer la liste des traits
+        créer une instance de write teacher writeTeacher
+        appeler writeTeacher.write_teacher(kanji que l'user veut apprendre, liste des traits qu'il a tracé)
+        """
