@@ -1,7 +1,6 @@
 import asyncio
 from googletrans import Translator
 
-
 class Dictionary() : 
     trans : Translator
 
@@ -24,7 +23,6 @@ class Dictionary() :
         translated = self.async2sync(self._get_translation(fr_word, 'ja'))
         return translated.text
         
-    
     def get_fr_translation(self, jp_word : str) : 
         translated = self.async2sync(self._get_translation(jp_word, 'fr'))
         return translated.text

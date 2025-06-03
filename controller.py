@@ -50,14 +50,6 @@ class Controller :
 
         return identifier.kanjiIdentifier(kanji_2_id)   
 
-    def kanji_tr_tabswitch(self, tab, tab_name_list, kanji : str):
-        '''
-        Used when clicking on a proposed kanji frame to switch tab and show its translation
-        '''
-        tab.set(tab_name_list[1])
-        # tab.entry  Missing editable entry for user to input text
-        tab.display_kanji_dictionary(kanji)
-
     def drawing_offset(self, dotlist : dict):
         '''
         Finds the upper-left corner limit coordinates of user drawing and offsets all points to 'move' the drawing to the upper-left corner of canvas

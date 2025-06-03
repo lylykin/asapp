@@ -74,7 +74,6 @@ class App(ctk.CTk):
         self.tab.compare_button.bind("<Button-1>", lambda event : self.display_boxes("canvas"))
         self.tab.search_text_button.bind("<Button-1>", lambda event : self.display_boxes("text"))
         self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
-        self.tab.search_text_button.bind("<ButtonPress-1>", self.search_dictionary)
 
     def canvas_new_stroke(self, event):
         '''
@@ -134,7 +133,7 @@ class App(ctk.CTk):
         '''
         Clears the displayed kanjis in corresponding tab (if any), then :
         - fetches the closest kanji to the user's drawing if in canvas tab
-        - splits user input text into individual kanji if in dictionary tab
+        - splits user input text into individual kanji and displays translation if in dictionary tab
         Then orders their display
         '''
         for display in self.kanjis_displayed_dico.get(tab,{}).values():
@@ -169,17 +168,18 @@ class App(ctk.CTk):
         entry = self.tab.text_box.get(1.0,ctk.END).split(sep='\n')[0] # Coupe la liste en ne s'intéressant qu'à la partie avant tout retour à la ligne (\n)
         lang_entry = self.dictionary.async2sync(self.dictionary._get_language(entry)).lang
         if lang_entry == "ja": # Si l'entrée se compose de kanjis
-            splitter = "" # Sépare par caractères si japonais
+            splitted_entry = entry.split() # Sépare par caractères si japonais
         else :
-            splitter = " " # Sépare par mots si français
+            splitted_entry = entry.split(sep=" ") # Sépare par mots si français
         found_kanjis = []
-        for word in entry.split(sep=splitter) :
+        for word in splitted_entry :
             found_kanjis.append(word)
         frame = self.tab.text_kanji_found_frame
 
         if found_kanjis == ['']: # Si entrée vide
             self.tab.entry_result_label.configure(text="Entrez du texte pour rechercher")
         else :
+            self.search_dictionary() # Affiche les informations du premier kanji / seul kanji entré
             self.tab.entry_result_label.configure(text="")
             for kanji in found_kanjis:
                 self.kanji_frame_create(frame, kanji)
@@ -209,17 +209,11 @@ class App(ctk.CTk):
         kanji_frame.grid_columnconfigure(0, weight=1) # Donne la place de frame disponible aux colonnes et lignes 0
         kanji_display.grid(row = 0, column = 0)
 
-        kanji_frame.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
-        kanji_display.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
+        kanji_frame.bind("<ButtonPress-1>", lambda event : self.kanji_tr_tabswitch(kanji))
+        kanji_display.bind("<ButtonPress-1>", lambda event : self.kanji_tr_tabswitch(kanji))
         self.kanjis_displayed_dico[display_tab][self.n_kanjis_displayed[display_tab]] = kanji_frame # Récupère le widget créé dans un dictionnaire
         
         self.n_kanjis_displayed[display_tab] += 1
-    
-#    def kanji_tr_tabswitch_trigger(self, event) :
-#        kanji_frame = event.widget
-#        kanji = kanji_frame.kanji_display.text
-#        self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji)
-    # USAGE ? 
 
     def switch_appearance(self, event):
         '''
@@ -237,9 +231,10 @@ class App(ctk.CTk):
         for x,y in debug_stroke :
             self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
     
-    def search_dictionary(self, event):
+    def search_dictionary(self):
         """
-        Appelée lorsque l'utilisateur appuie sur une touche du clavier, recherche parmis les kanjis existant ou dans le dictionnaire les informations à afficher
+        Appelée lorsque l'utilisateur appuie sur le bouton de recherche de caractères,
+        recherche parmis les kanjis existant ou dans le dictionnaire les informations à afficher
         """
         to_search = self.tab.text_box.get(1.0,ctk.END)
         to_search_failsafe_list = to_search.split(sep='\n') # Coupe la liste en ne s'intéressant qu'à la partie avant tout retour à la ligne (\n)
@@ -255,3 +250,13 @@ class App(ctk.CTk):
             self.tab.kanji_name_label.configure(text=kanji_name)
             self.tab.desc_label.configure(text=kanji_desc)
             #self.tab.kanji_name_label.configure(text="No results found") # Cas où aucun résultat trouvé
+
+    def kanji_tr_tabswitch(self, kanji : str):
+        '''
+        Used when clicking on a proposed kanji frame to switch tab and show its translation
+        kanji est le caractère / la chaine correspondant à la frame d'affichage cliquée 
+        '''
+        self.tab.set(self.tab_name_list[1]) # Passe au deuxième onglet
+        self.tab.text_box.delete(0.0,ctk.END) 
+        self.tab.text_box.insert(0.0,kanji) # Efface la text_box puis lui rajoute la valeur cliquée
+        self.display_boxes("text")
