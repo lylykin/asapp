@@ -7,12 +7,13 @@ from dtw import Dtw
 
 class writeTeacher() : 
     kanji : Kanji
+    speed : float
     
-    def __init__(self, kanji : Kanji):
+    def __init__(self, kanji : Kanji, speed = 0.5):
         """
         kanji est le kanji cliqué/ entré par l'user
         """
-        pass
+        self.speed
         #self.ref_strokes = kanji.strokes
     
     def write_teacher(self, stroke_list : list) : 
@@ -33,7 +34,39 @@ class writeTeacher() :
             return ("Bien joué, vous avez correctement écrit le kanji!")
         else : 
             return("Erreur : les traits " + incorrect_index + "sont mal tracés. Vous pouvez réessayer")
+        
+    def teacher_time(self, time) : 
+        """retourne la partie du kanji qui doit être écrite en fonction du temps écoulé"""
+
+        
+        write_stroke = [[] for _ in range (self.kanji.stroke_count)]
+        step_time,s,p = 0,0,0
+        
+        while step_time != time  :
             
+            if p >= len(self.kanji.strokes[s]) :
+                s +=1
+                p = 0
+                write_stroke[s].append (self.kanji.strokes[s][p])    
+                step_time += self.speed
+                
+            else : 
+                write_stroke[s].append (self.kanji.strokes[s][p])    
+                step_time += self.speed    
+                p+=1
+                
+        return write_stroke
+    
+    def total_write_time(self, kanji : Kanji):
+        """
+        le temps total pour l'écire est vitesse*nb points
+        """
+        count = 0
+        for s in self.kanji.strokes : 
+            for p in self.kanji.strokes[s] :
+                count +=1
+        
+        return count*self.speed
         
             
     
