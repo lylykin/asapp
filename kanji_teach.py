@@ -13,7 +13,7 @@ class writeTeacher() :
         """
         kanji est le kanji cliqué/ entré par l'user
         """
-        self.speed
+        self.speed = speed
         #self.ref_strokes = kanji.strokes
     
     def write_teacher(self, stroke_list : list) : 

@@ -17,7 +17,7 @@ class App(ctk.CTk):
 
         self.controller = Controller()
         self.dictionary = Dictionary()
-        self.teacher = writeTeacher()
+        #self.teacher = writeTeacher()
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list, self.controller)
@@ -47,9 +47,6 @@ class App(ctk.CTk):
         self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter", width=125, height=20)
         #self.appearance_switch = ctk.CTkSwitch(master, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearance)
         self.appearance_switch = ctk.CTkSwitch(self, textvariable=self.appearance, variable=self.appearance, offvalue="light", onvalue="dark", text="theme")
-        
-        self.teacher_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="apprendre à écrire le kanji", width=125, height=20)
-        self.teacher_entry = ctk.CTkEntry(self)
 
         # Définition de l'état des widgets par défaut
         self.appearance_switch.select()
@@ -59,8 +56,6 @@ class App(ctk.CTk):
         self.tab.grid(row = 0, column = 1, rowspan=3, sticky = "nsew", padx=20, pady=20)
         self.exit_button.grid(row=3,column=0, sticky="s")
         self.appearance_switch.grid(row=2, column=0, sticky="s")
-        self.teacher_button.grid(row =3, column = 0, sticky = "s")
-        self.teacher_entry.grid(row = 3, column =1, sticky = 's' )
 
         # Définit la répartition globale de taille de l'application pour les colonnes et lignes
         self.grid_rowconfigure(1, weight=20)
@@ -82,6 +77,7 @@ class App(ctk.CTk):
         self.tab.search_text_button.bind("<Button-1>", lambda event : self.display_boxes("text"))
         self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
         self.appearance_switch.bind("<ButtonPress-1>", self.kanji_check_writing)
+        self.tab.teacher_button.bind("<ButtonPress-1>", self.kanji_check_writing)
 
     def canvas_new_stroke(self, event):
         '''
@@ -247,7 +243,7 @@ class App(ctk.CTk):
         Appelée lorsque l'utilisateur appuie sur le bouton de recherche de caractères,
         recherche parmis les kanjis existant ou dans le dictionnaire les informations à afficher
         """
-        to_search = self.tab.text_box.get(1.0,ctk.END)
+        to_search = self.tab.text_box.get()
         if self.tab.last_search != to_search:
             self.tab.last_search = to_search
             kanji_name, lang = self.dictionary.translate_language(to_search)
@@ -277,11 +273,10 @@ class App(ctk.CTk):
         créer une instance de write teacher writeTeacher
         appeler writeTeacher.write_teacher(kanji que l'user veut apprendre, liste des traits qu'il a tracé)
         """
-        
-        #pas sure que ca marche comme ca, mais je veux récupérer ce qui a été écrit
-        kanji = self.teacher_entry.get()
+        kanji = self.tab.teacher_entry.get()
         kanji_db = KanjiDB.the()._kanji_db
-        kan = kanji_db[kanji]        
+        kan = kanji_db[kanji]    
+        self.teacher = writeTeacher(kanji=kan)    
         time = 0
         
         while time < self.teacher.total_write_time() : 
