@@ -3,6 +3,7 @@ from tabview import TabView
 from PIL import Image
 from controller import Controller
 from kanji_teach import writeTeacher
+from dictionary import Dictionary
 
 
 class App(ctk.CTk):
@@ -15,6 +16,7 @@ class App(ctk.CTk):
         self.resizable(False,True)
 
         self.controller = Controller()
+        self.dictionary = Dictionary()
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list, self.controller)
@@ -162,6 +164,9 @@ class App(ctk.CTk):
                 self.kanji_frame_create(frame, kanji) # calls frame create for frame canvas
 
     def display_entry_elements(self):
+        """
+        splits user input text into individual kanji and displays translation
+        """
         # Cas du bouton pour découper en caractères l'entrée de recherche dictionnaire
         # Splits input text by whitespace, then makes a single list of every character
         entry = self.tab.text_box.get(1.0,ctk.END).split(sep='\n')[0] # Coupe la liste en ne s'intéressant qu'à la partie avant tout retour à la ligne (\n)
@@ -195,7 +200,6 @@ class App(ctk.CTk):
 
         widget_and_pad_size = widget_size + padxy
         frame_width = frame.winfo_width()
-        frame_height = frame.winfo_height()
         n_widget_large = frame_width // widget_and_pad_size
         column = self.n_kanjis_displayed[display_tab] % n_widget_large
         row = self.n_kanjis_displayed[display_tab] // n_widget_large
