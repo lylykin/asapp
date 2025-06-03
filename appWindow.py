@@ -266,3 +266,4 @@ class App(ctk.CTk):
         créer une instance de write teacher writeTeacher
         appeler writeTeacher.write_teacher(kanji que l'user veut apprendre, liste des traits qu'il a tracé)
         """
+        pass
