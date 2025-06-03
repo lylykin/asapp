@@ -32,7 +32,7 @@ class TabView(ctk.CTkTabview):
 
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(master) # Stocke le canvas
-        self.kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray") #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
+        self.kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray", width= 210, height= 375) # Stocke les kanji et kana proposés par l'app
         self.main_canvas = ctk.CTkCanvas(self.canvas_frame, bg="white", borderwidth=3, cursor="tcross", width=310, height=270) 
         self.compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Comparer le caractère")
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
@@ -67,10 +67,10 @@ class TabView(ctk.CTkTabview):
 
         # Définitions des Widget
         self.text_frame = ctk.CTkFrame(master) # Stocke la zone de texte
-        self.text_kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray") #, width= 200, height= 200 # Stocke les kanji et kana proposés par l'app
+        self.text_kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray", width= 210, height= 375) # Stocke les kanji et kana proposés par l'app
         self.text_box = ctk.CTkTextbox(self.text_frame, width=300, height=150, wrap='word') # Textbox est la version améliorée d'un simple Entry
         self.search_text_button = ctk.CTkButton(self.text_frame, border_width=3, corner_radius=5, anchor="center", text="Chercher les caractères")
-        self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray") # Changer à une couleur dynamique réactive au thème
+        self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray", width= 540, height= 165) # Changer à une couleur dynamique réactive au thème
         self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", weight="bold")))
         self.desc_label = ctk.CTkLabel(self.desc_frame, text="")
         
