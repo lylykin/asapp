@@ -29,8 +29,11 @@ class Dictionary() :
         translated = self.async2sync(self._get_translation(jp_word, 'fr'))
         return translated.text
     
+    async def _get_language(self, word):
+        return await self.trans.detect(word)
+    
     def translate_language(self, word):
-        lang = self.async2sync(self.trans.detect(word))
+        lang = self.async2sync(self._get_language(word))
         lang = lang.lang
         if lang == "ja":
             return self.get_fr_translation(word), lang

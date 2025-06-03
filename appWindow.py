@@ -71,8 +71,8 @@ class App(ctk.CTk):
         self.exit_button.bind("<ButtonPress-1>", self.end_app)
         self.tab.clear_button.bind("<ButtonPress-1>", self.clear_canvas)
         self.tab.correct_button.bind("<ButtonPress-1>", self.clear_last_stroke)
-        self.tab.compare_button.bind("<Button-1>", lambda event : self.display_possible_kanjis('canvas'))
-        self.tab.search_text_button.bind("<Button-1>", lambda event : self.display_possible_kanjis('text'))
+        self.tab.compare_button.bind("<Button-1>", lambda event : self.display_boxes("canvas"))
+        self.tab.search_text_button.bind("<Button-1>", lambda event : self.display_boxes("text"))
         self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
         self.tab.search_text_button.bind("<ButtonPress-1>", self.search_dictionary)
 
@@ -130,52 +130,75 @@ class App(ctk.CTk):
             self.tab.main_canvas.delete(f"n_stroke_{int_last_stroke}")
             self.strokes.pop(int_last_stroke)
 
-    def display_possible_kanjis(self, button : str):
+    def display_boxes(self, tab):
         '''
         Clears the displayed kanjis in corresponding tab (if any), then :
         - fetches the closest kanji to the user's drawing if in canvas tab
         - splits user input text into individual kanji if in dictionary tab
         Then orders their display
         '''
-        for display in self.kanjis_displayed_dico.get(button,{}).values():
+        for display in self.kanjis_displayed_dico.get(tab,{}).values():
             display.destroy()
-        self.n_kanjis_displayed[button] = 0
-        self.kanjis_displayed_dico[button] = {}
+        self.n_kanjis_displayed[tab] = 0
+        self.kanjis_displayed_dico[tab] = {}
 
-        if button == 'canvas':
-            client_strokes = self.controller.reduce_dotlist_size(self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
-            found_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
-            frame = self.tab.kanji_found_frame
+        if tab == "canvas":
+            self.display_possible_kanjis()
+        elif tab == "text":
+            self.display_entry_elements()
 
-        
-        if button == 'text' :
-            # Splits input text by whitespace, then makes a single list of every character
-            raw_kanjis = self.tab.text_box.get(1.0,ctk.END).split()
-            print(raw_kanjis)
-            found_kanjis = []
-            for s in raw_kanjis :
-                for k in s :
-                    found_kanjis.append(k)
-            frame = self.tab.text_kanji_found_frame
+    def display_possible_kanjis(self):
+        """
+        fetches the closest kanji to the user's drawing
+        """
+        # Cas du bouton pour comparer les kanjis dans la fenêtre identifier
+        client_strokes = self.controller.reduce_dotlist_size(self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
+        found_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
+        frame = self.tab.kanji_found_frame
 
         if found_kanjis == [] : # Si aucun résultat
             self.tab.n_found_label.configure(text="Aucun résultat trouvé")
         else :
             self.tab.n_found_label.configure(text="")
-            print(found_kanjis)
             for kanji in found_kanjis:
-                self.kanji_frame_create(frame, kanji, button)
+                self.kanji_frame_create(frame, kanji) # calls frame create for frame canvas
 
-    def kanji_frame_create(self, frame, kanji : str, button, widget_size = 40, padxy = 2) :
+    def display_entry_elements(self):
+        # Cas du bouton pour découper en caractères l'entrée de recherche dictionnaire
+        # Splits input text by whitespace, then makes a single list of every character
+        entry = self.tab.text_box.get(1.0,ctk.END).split(sep='\n')[0] # Coupe la liste en ne s'intéressant qu'à la partie avant tout retour à la ligne (\n)
+        lang_entry = self.dictionary.async2sync(self.dictionary._get_language(entry)).lang
+        if lang_entry == "ja": # Si l'entrée se compose de kanjis
+            splitter = "" # Sépare par caractères si japonais
+        else :
+            splitter = " " # Sépare par mots si français
+        found_kanjis = []
+        for word in entry.split(sep=splitter) :
+            found_kanjis.append(word)
+        frame = self.tab.text_kanji_found_frame
+
+        if found_kanjis == ['']: # Si entrée vide
+            self.tab.entry_result_label.configure(text="Entrez du texte pour rechercher")
+        else :
+            self.tab.entry_result_label.configure(text="")
+            for kanji in found_kanjis:
+                self.kanji_frame_create(frame, kanji)
+
+    def kanji_frame_create(self, frame, kanji : str, widget_size = 40, padxy = 2) :
         '''
         Crée une frame contenant un kanji dans le widget spécifié en frame, selon la taille, l'espace et le kanji spécifié
         S'adapte à la taille du contenant frame
         '''
+        if frame == self.tab.kanji_found_frame : # correspond à "canvas" ou "text" pour les kanjis affichés dans la tab identification ou dictionnaire respectivement
+            display_tab = "canvas"
+        elif frame == self.tab.text_kanji_found_frame :
+            display_tab = "text"
+
         widget_and_pad_size = widget_size + padxy
         frame_width = frame.winfo_width() - 100 # Prise en compte du slider de la frame pour l'affichage des widgets
         n_widget_large = frame_width // widget_and_pad_size
-        column = self.n_kanjis_displayed[button] % n_widget_large
-        row = self.n_kanjis_displayed[button] // n_widget_large
+        column = self.n_kanjis_displayed[display_tab] % n_widget_large
+        row = self.n_kanjis_displayed[display_tab] // n_widget_large
 
         kanji_frame = ctk.CTkFrame(frame, width=widget_size, height=widget_size, fg_color="white")
         kanji_display = ctk.CTkLabel(kanji_frame, text = kanji, text_color="black", font=(ctk.CTkFont(family="comic sans ms", size=20)))
@@ -188,9 +211,9 @@ class App(ctk.CTk):
 
         kanji_frame.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
         kanji_display.bind("<ButtonPress-1>", lambda event : self.controller.kanji_tr_tabswitch(self.tab, self.tab_name_list, kanji))
-        self.kanjis_displayed_dico[button][self.n_kanjis_displayed[button]] = kanji_frame # Récupère le widget créé dans un dictionnaire
+        self.kanjis_displayed_dico[display_tab][self.n_kanjis_displayed[display_tab]] = kanji_frame # Récupère le widget créé dans un dictionnaire
         
-        self.n_kanjis_displayed[button] += 1
+        self.n_kanjis_displayed[display_tab] += 1
     
 #    def kanji_tr_tabswitch_trigger(self, event) :
 #        kanji_frame = event.widget
@@ -213,10 +236,6 @@ class App(ctk.CTk):
         '''
         for x,y in debug_stroke :
             self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
-            
-            
-    def dico_widget(self, dico, event) : 
-        pass
     
     def search_dictionary(self, event):
         """
@@ -227,17 +246,12 @@ class App(ctk.CTk):
         to_search = to_search_failsafe_list[0]
         if self.tab.last_search != to_search and to_search !="":
             self.tab.last_search = to_search
-            # INSERER LE PROCESS DE RECHERCHE
-            # Récupérer dans les variables ci-dessous les informations
-            found = True # Mettre une condition selon si un caractère ou mot trouvé dans le dico
-            if found :
-                kanji_name, lang = self.dictionary.translate_language(to_search)
-                if lang == "ja":
-                    lang = "Mot Français"
-                elif lang == "fr":
-                    lang = "Mot Japonais"
-                kanji_desc = lang + "\n." * 10
-                self.tab.kanji_name_label.configure(text=kanji_name)
-                self.tab.desc_label.configure(text=kanji_desc)
-            else :
-                self.tab.kanji_name_label.configure(text="No results found")
+            kanji_name, lang = self.dictionary.translate_language(to_search)
+            if lang == "ja":
+                lang = "Mot Français"
+            elif lang == "fr":
+                lang = "Mot Japonais"
+            kanji_desc = lang + "\n." * 10
+            self.tab.kanji_name_label.configure(text=kanji_name)
+            self.tab.desc_label.configure(text=kanji_desc)
+            #self.tab.kanji_name_label.configure(text="No results found") # Cas où aucun résultat trouvé

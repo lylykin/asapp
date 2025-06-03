@@ -73,6 +73,7 @@ class TabView(ctk.CTkTabview):
         self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray") # Changer à une couleur dynamique réactive au thème
         self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", weight="bold")))
         self.desc_label = ctk.CTkLabel(self.desc_frame, text="")
+        self.entry_result_label = ctk.CTkLabel(self.text_kanji_found_frame, text="")
         
         # Position des frame dans la tab
         self.text_frame.grid(row=0,column=0, sticky="nsew")
@@ -86,6 +87,9 @@ class TabView(ctk.CTkTabview):
         # Position des widget dans la desc_frame
         self.kanji_name_label.grid(row=0, column = 0, padx=15, pady=5, sticky="ew") 
         self.desc_label.grid(row=1, column = 0, padx=15, pady=5, sticky="ew") 
+
+        # Position des widget dans la text_kanji_found_frame
+        self.entry_result_label.grid(row=0,column=0, sticky='nsew')
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
         self.grid_rowconfigure(0, weight=1)
