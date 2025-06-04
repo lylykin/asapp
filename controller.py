@@ -57,7 +57,7 @@ class Controller :
         x_points = []
         y_points = []
         offset_dotlist = []
-        if x_points != [] : # Failsafe si aucun points tracés
+        if dotlist != [] : # Failsafe si aucun points tracés
             for stroke_points in dotlist:
                 for point in stroke_points:
                     x_points.append(point[0])
@@ -67,8 +67,6 @@ class Controller :
             for points in (dotlist):
                 offset_points = [(p[0]-x_min,p[1]-y_min) for p in points]
                 offset_dotlist.append(offset_points)
-        else : 
-            offset_dotlist = dotlist
     
         return offset_dotlist
         
