@@ -19,7 +19,7 @@ class App(ctk.CTk):
         self.dictionary = Dictionary()
         #self.teacher = writeTeacher()
         
-        self.tab_name_list = ["Identifier un caractère", "Dictionnaire"] # Noms des onglets que l'on donne, impérativement Strings
+        self.tab_name_list = ["Identifier un caractère", "Dictionnaire","Vérifier l'écriture"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list, self.controller)
         for tab_name in self.tab_name_list:
             self.tab._tab_dict[tab_name].grid_configure(ipady=10)
@@ -265,22 +265,32 @@ class App(ctk.CTk):
         self.tab.text_box.insert(0.0,kanji) # Efface la text_box puis lui rajoute la valeur cliquée
         self.display_boxes("text")
 
-    def kanji_check_writing(self, event) : 
+    def kanji_show_writing(self, event) : 
         """
-        ce que je veux quand on est en mode apprendre : 
-        quand l'user trace un kanji : récupérer la liste des traits
-        créer une instance de write teacher writeTeacher
-        appeler writeTeacher.write_teacher(kanji que l'user veut apprendre, liste des traits qu'il a tracé)
+        Trace, trait par trait, le kanji entier
         """
         kanji = self.tab.teacher_entry.get()
         kanji_db = KanjiDB.the()._kanji_db
         kan = kanji_db[kanji]    
         self.teacher = writeTeacher(kanji=kan)    
         time = 0
+        n = 0
         
         while time < self.teacher.total_write_time() : 
-            self.custom_stroke_debug(self.teacher.write_teacher(kan.strokes))
+            #si le canvas a qqchose affiché
+                #le clear
+            time += self.teacher.stroke_write_time(n)
+            self.custom_stroke_debug(self.teacher.teacher_time(kan.strokes))
+            #ensuite l'afficher sur un canvas, mais la je sèche
+            n+=1
+            
         
+    def kanji_check_writing(self, event) : 
+        """
+        vérifie que le kanji écrit par l'utilisateur est correctement fait, et dans l'ordre
+        """
+        #récupérer la série de points créée sur le canvas
         
+        return self.teacher.write_teacher(None)
             
         

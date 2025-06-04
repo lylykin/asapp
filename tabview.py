@@ -8,6 +8,7 @@ class TabView(ctk.CTkTabview):
         # create tabs
         self.add(tab_name_list[0])
         self.add(tab_name_list[1])
+        self.add(tab_name_list[2])
         self.set(tab_name_list[0]) # Tab principale ouverte par défaut
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
