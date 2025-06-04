@@ -18,15 +18,14 @@ class App(ctk.CTk):
         self.controller = Controller()
         self.dictionary = Dictionary()
         
-        self.tab_name_list = ["Identifier un caractère", "Dictionnaire","Vérifier l'écriture"] # Noms des onglets que l'on donne, impérativement Strings
+        self.tab_name_list = ["Identifier un caractère", "Dictionnaire","Apprendre l'écriture"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list, self.controller)
         for tab_name in self.tab_name_list:
             self.tab._tab_dict[tab_name].grid_configure(ipady=10)
         self.tab._segmented_button.configure(font=ctk.CTkFont(family="Arial", size=12, weight="bold"))
 
-         # Nombre de traits dessinés depuis l'init
-        self.strokes = [] # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
-        self.n_kanjis_displayed = {} # Nombre de caractères affichés sur la droite de chaque tab, contient 1 entier associée à chaque tab
+        self.strokes = [] # Liste stockant les traits tracés sous forme de liste de paires de points
+        self.n_kanjis_displayed = {} # Nombre de caractères affichés sur la droite de chaque tab, contient 1 entier associé à chaque tab
         self.kanjis_displayed_dico = {} # Caractères affichés sur la droite de chaque tab (numéro de frame : widget associé)
 
         self.widget_window_placement()
@@ -81,19 +80,9 @@ class App(ctk.CTk):
     def canvas_new_stroke(self, event):
         '''
         Mesure un nouveau clic gauche de l'utilisateur sur le canvas
-        et ajoute 1 au compteur (initialement nul) des traits tracés.
+        et crée la liste de points dans la liste des traits tracés.
         '''
-        self.strokes.append([])
-        self.strokes[-1] = [] # Définis la liste à remplir pour un nouveau trait
-    
-    def canvas_end_stroke(self, event):
-        '''
-        Permet d'observer le résultat du stockage des points du tracé
-        ! TEMPORAIRE !
-        '''
-        if len(self.strokes) != 0 : # Evite de récupérer des points si la liste de points n'existe pas
-            
-            print(f"Liste de points :\n{self.strokes[-1]}\nNombre de points : {len(self.strokes[-1])}")
+        self.strokes.append([]) # Définit la liste à remplir pour un nouveau trait
 
     def canvas_draw_stroke(self, event):
         '''
@@ -106,6 +95,14 @@ class App(ctk.CTk):
             cursor_pos = (x, y) # Récupère les coordonnées de la souris (relativement au 0,0 du canvas)
             self.strokes[-1].append(cursor_pos) # Ajoute les coordonnées à la liste de points courante
             self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags=["user_stroke_dot", f"n_stroke_{len(self.strokes)}"], width=4) # Affichage du point
+    
+    def canvas_end_stroke(self, event):
+        '''
+        Permet d'ignorer les clics sans tracé
+        '''
+        if len(self.strokes) > 0 : # Evite de chercher des points si la liste de points n'existe pas
+            if self.strokes[-1] == []:
+                self.strokes.pop()
 
     def end_app(self, event):
         '''
@@ -150,7 +147,7 @@ class App(ctk.CTk):
 
     def display_possible_kanjis(self):
         """
-        fetches the closest kanji to the user's drawing
+        Fetches the closest kanji to the user's drawing
         """
         # Cas du bouton pour comparer les kanjis dans la fenêtre identifier
         client_strokes = (self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
@@ -166,7 +163,7 @@ class App(ctk.CTk):
 
     def display_entry_elements(self):
         """
-        splits user input text into individual kanji and displays translation
+        Splits user input text into individual kanji and displays translation
         """
         # Cas du bouton pour découper en caractères l'entrée de recherche dictionnaire
         # Splits input text by whitespace, then makes a single list of every character
