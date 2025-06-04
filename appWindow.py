@@ -173,7 +173,7 @@ class App(ctk.CTk):
         entry = self.tab.text_box.get(1.0,ctk.END).split(sep='\n')[0] # Coupe la liste en ne s'intéressant qu'à la partie avant tout retour à la ligne (\n)
         lang_entry = self.dictionary.async2sync(self.dictionary._get_language(entry)).lang
         if lang_entry == "ja": # Si l'entrée se compose de kanjis
-            splitted_entry = entry.split() # Sépare par caractères si japonais
+            splitted_entry = list(entry) # Sépare par caractères si japonais
         else :
             splitted_entry = entry.split(sep=" ") # Sépare par mots si français
         found_kanjis = []
