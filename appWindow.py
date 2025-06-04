@@ -17,7 +17,6 @@ class App(ctk.CTk):
 
         self.controller = Controller()
         self.dictionary = Dictionary()
-        #self.teacher = writeTeacher()
         
         self.tab_name_list = ["Identifier un caractère", "Dictionnaire","Vérifier l'écriture"] # Noms des onglets que l'on donne, impérativement Strings
         self.tab = TabView(self, self.tab_name_list, self.controller)
@@ -269,6 +268,7 @@ class App(ctk.CTk):
         """
         Trace, trait par trait, le kanji entier
         """
+        
         kanji = self.tab.teacher_entry.get()
         kanji_db = KanjiDB.the()._kanji_db
         kan = kanji_db[kanji]    
