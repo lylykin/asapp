@@ -41,10 +41,8 @@ class App(ctk.CTk):
 
         # Définitions des Widget
         logo = ctk.CTkImage(light_image=Image.open("assets/logo.png"), size=(50, 50))
-        # ctk.CTkImage(light_image=Image.open("<path to light mode image>"), dark_image=Image.open("<path to dark mode image>"), size=(30, 30))
         self.logo_label = ctk.CTkLabel(self, image=logo, text="")  # display image with a CTkLabel
         self.exit_button = ctk.CTkButton(self, border_width=3, corner_radius=5, anchor="center", text="Quitter", width=125, height=20)
-        #self.appearance_switch = ctk.CTkSwitch(master, textvariable=self.appearance, offvalue="light", onvalue="dark", text="theme", command=self.switch_appearance)
         self.appearance_switch = ctk.CTkSwitch(self, textvariable=self.appearance, variable=self.appearance, offvalue="light", onvalue="dark", text="theme")
 
         # Définition de l'état des widgets par défaut
@@ -263,15 +261,11 @@ class App(ctk.CTk):
             to_search = self.tab.text_box.get('0.0', "end")
         if self.tab.last_search != to_search:
             self.tab.last_search = to_search
-            kanji_name, lang = self.dictionary.translate_language(to_search.split(sep=' ')[0].split(sep='\n')[0])
-            if lang == "ja":
-                lang = "Mot Français"
-            elif lang == "fr":
-                lang = "Mot Japonais"
-            kanji_desc = lang + "\n." * 6
-            self.tab.kanji_name_label.configure(text=kanji_name)
-            self.tab.desc_label.configure(text=kanji_desc)
-            #self.tab.kanji_name_label.configure(text="No results found") # Cas où aucun résultat trouvé
+            kanji_name, pronunciation = self.dictionary.translate_language(to_search.split(sep=' ')[0].split(sep='\n')[0])
+            if pronunciation != None:
+                self.tab.kanji_name_label.configure(text=f"{kanji_name} ({pronunciation})")
+            else :
+                self.tab.kanji_name_label.configure(text=kanji_name)
 
     def kanji_tr_tabswitch(self, kanji : str, destroy=True):
         '''

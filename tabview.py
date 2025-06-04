@@ -68,18 +68,18 @@ class TabView(ctk.CTkTabview):
 
         # Définitions des Widget
         self.text_frame = ctk.CTkFrame(master) # Stocke la zone de texte
-        self.text_kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray", width= 215, height= 210) # Stocke les kanji et kana proposés par l'app
+        self.text_kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray", width= 215, height= 170) # Stocke les kanji et kana proposés par l'app
         self.text_box = ctk.CTkTextbox(self.text_frame, width=300, height=150, wrap='word') # Textbox est la version améliorée d'un simple Entry
         self.search_text_button = ctk.CTkButton(self.text_frame, border_width=3, corner_radius=5, anchor="center", text="Chercher les caractères")
         self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray", width= 540, height= 165) # Changer à une couleur dynamique réactive au thème
-        self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", weight="bold")))
-        self.desc_label = ctk.CTkLabel(self.desc_frame, text="")
+        self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", weight="bold", size=20)))
+        #self.desc_label = ctk.CTkLabel(self.desc_frame, text="")
         self.entry_result_label = ctk.CTkLabel(self.text_kanji_found_frame, text="")
         
         # Position des frame dans la tab
         self.text_frame.grid(row=0,column=0, sticky="nsew")
-        self.text_kanji_found_frame.grid(row=0,column=1, sticky="nsew")
-        self.desc_frame.grid(row=1, column = 0, columnspan=2, sticky="ew")
+        self.text_kanji_found_frame.grid(row=0,column=1, sticky="new")
+        self.desc_frame.grid(row=1, column = 0, columnspan=2, sticky="new")
 
         # Position des widget dans la text_frame
         self.text_box.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
@@ -87,13 +87,13 @@ class TabView(ctk.CTkTabview):
 
         # Position des widget dans la desc_frame
         self.kanji_name_label.grid(row=0, column = 0, padx=15, pady=5, sticky="ew") 
-        self.desc_label.grid(row=1, column = 0, padx=15, pady=5, sticky="ew") 
+        #self.desc_label.grid(row=1, column = 0, padx=15, pady=5, sticky="ew") 
 
         # Position des widget dans la text_kanji_found_frame
         self.entry_result_label.grid(row=0,column=0, sticky='nsew')
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
-        master.grid_rowconfigure(0, weight=2)
+        master.grid_rowconfigure(0, weight=1)
         master.grid_rowconfigure(0, weight=1)
         master.grid_columnconfigure(0, weight=1)
         master.grid_columnconfigure(1, weight=2)
