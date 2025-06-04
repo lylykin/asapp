@@ -40,18 +40,10 @@ class TabView(ctk.CTkTabview):
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
         self.correct_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
         self.n_found_label = ctk.CTkLabel(self.kanji_found_frame, text="")
-        #self.teacher_frame = ctk.CTkFrame(master)
-        #self.teacher_button = ctk.CTkButton(self.teacher_frame, border_width=3, corner_radius=5, anchor="center", text="Apprendre à écrire le kanji", width=125, height=20)
-        #self.teacher_entry = ctk.CTkEntry(self.teacher_frame)
 
         # Position des frame dans la tab
         self.canvas_frame.grid(row=0,column=0, sticky="nsew")
-        #self.teacher_frame.grid(row=1, column=0, sticky="esw")
         self.kanji_found_frame.grid(row=0,column=1, rowspan=2, sticky="nsew")
-
-        # Position des widget dans la teacher_frame
-        #self.teacher_button.grid(row = 0, column = 0, sticky = "s")
-        #self.teacher_entry.grid(row = 0, column = 1, sticky = "s")
 
         # Position des widget dans la canvas_frame
         self.main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
@@ -63,10 +55,9 @@ class TabView(ctk.CTkTabview):
         self.n_found_label.grid(row=0,column=0, sticky='nsew')
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=2)
-        self.grid_propagate(True)
+        master.grid_columnconfigure(0, weight=1)
+        master.grid_columnconfigure(1, weight=2)
+        master.grid_propagate(True)
 
     def widget_dictionary_placement(self, master):
         '''
@@ -102,61 +93,45 @@ class TabView(ctk.CTkTabview):
         self.entry_result_label.grid(row=0,column=0, sticky='nsew')
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=2)
-        self.grid_propagate(True)
-
-        #DEBUG
-        self.display_kanji_dictionary(':D')
-    
-    def display_kanji_dictionary(self, kanji):
-        '''
-        Permet d'afficher et d'ajouter les descriptions noms et apparence des kanjis selon le paramètre d'entrée
-        EN DEVELOPPEMENT
-        '''
-        #self.kanji_display_dictionary.configure(text=kanji)
-        kanji_desc = ""
-        kanji_name = ""
-        self.desc_label.configure(text=kanji_desc)
-        self.kanji_name_label.configure(text=kanji_name)
+        master.grid_rowconfigure(0, weight=2)
+        master.grid_rowconfigure(0, weight=1)
+        master.grid_columnconfigure(0, weight=1)
+        master.grid_columnconfigure(1, weight=2)
+        master.grid_propagate(True)
 
     def widget_teacher_canvas_placement(self, master):
         '''
-        Définis les différents widget à placer dans la fenêtre de la tab canvas
+        Définis les différents widget à placer dans la fenêtre de la tab teacher
         '''
-        # Définition et position de la frame centrale contenant la tab
-        #self.center_frame_compare_canvas = ctk.CTkFrame(master)
-        #self.center_frame_compare_canvas.grid(row=0,column=0, padx=10, pady=10, sticky="nsew")
-        #self.center_frame_compare_canvas.grid_rowconfigure(0, weight=1)
-        #self.center_frame_compare_canvas.grid_propagate(True)
-
         # Définitions des Widget
-        self.teacher_frame = ctk.CTkFrame(master) # Stocke le canvas
-        self.t_main_canvas = ctk.CTkCanvas(self.teacher_frame, bg="white", borderwidth=3, cursor="tcross", width=310, height=270) 
-        self.t_compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Afficher l'écriture")
-        self.t_clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
-        self.t_correct_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
+        self.teacher_frame = ctk.CTkFrame(master)
+        self.t_canvas_frame = ctk.CTkFrame(master)
+        self.t_main_canvas = ctk.CTkCanvas(self.t_canvas_frame, bg="white", borderwidth=3, cursor="tcross", width=310, height=270) 
+        self.t_compare_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Afficher l'écriture")
+        self.t_clear_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
+        self.t_correct_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
         self.teacher_button = ctk.CTkButton(self.teacher_frame, border_width=3, corner_radius=5, anchor="center", text="Apprendre à écrire le kanji", width=125, height=20)
         self.teacher_entry = ctk.CTkEntry(self.teacher_frame)
 
         # Position des frame dans la tab
         self.teacher_frame.grid(row=1, column=0, sticky="esw")
-        self.kanji_found_frame.grid(row=0,column=1, rowspan=2, sticky="nsew")
+        self.t_canvas_frame.grid(row=0,column=0, sticky="nsew")
+        #self.t_kanji_found_frame.grid(row=0,column=1, rowspan=2, sticky="nsew")
+        # A définir sa propre frame si nécessaire !
 
         # Position des widget dans la teacher_frame
         self.teacher_button.grid(row = 0, column = 0, sticky = "s")
         self.teacher_entry.grid(row = 0, column = 1, sticky = "s")
 
-        # Position des widget dans la canvas_frame
+        # Position des widget dans la t_canvas_frame
         self.t_main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
         self.t_compare_button.grid(row=1, column = 0, columnspan=2, padx=16, pady=5, sticky="ew") 
         self.t_clear_button.grid(row=2, column=1, padx=4, pady=5, sticky="ew")
         self.t_correct_button.grid(row=2,column=0,padx=4, pady=5,sticky = "ew")
 
-
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=2)
-        self.grid_propagate(True)
+        master.grid_rowconfigure(0, weight=2)
+        master.grid_rowconfigure(1, weight=1)
+        master.grid_columnconfigure(0, weight=1)
+        master.grid_columnconfigure(1, weight=2)
+        master.grid_propagate(True)
