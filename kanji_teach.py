@@ -57,7 +57,7 @@ class writeTeacher() :
                 
         return write_stroke
     
-    def total_write_time(self, kanji : Kanji):
+    def total_write_time(self):
         """
         le temps total pour l'écire est vitesse*nb points
         """
@@ -67,6 +67,20 @@ class writeTeacher() :
                 count +=1
         
         return count*self.speed
+    
+    def stroke_write_time(self, n : int) -> float:
+        """
+        Retourne le temps qu'il faut pour écrire le n -ième stroke
+        """
+        
+        if n >= len(self.kanji.stroke_count) : 
+            raise IndexError(f"Erreur, le numéro du trait est trop grand : {n} (max : {len(self.kanji.stroke_count-1)})")
+        
+        else : 
+            stroke = self.kanji.strokes[n]
+            return len(stroke)*self.speed
+        
+        
         
             
     
