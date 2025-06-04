@@ -25,8 +25,8 @@ class App(ctk.CTk):
             self.tab._tab_dict[tab_name].grid_configure(ipady=10)
         self.tab._segmented_button.configure(font=ctk.CTkFont(family="Arial", size=12, weight="bold"))
 
-        self.n_strokes = 0 # Nombre de traits dessinés depuis l'init
-        self.strokes = {} # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
+         # Nombre de traits dessinés depuis l'init
+        self.strokes = [] # Dico stockant les traits tracés sous forme de liste de paires de points associés à un id (1 à infini)
         self.n_kanjis_displayed = {} # Nombre de caractères affichés sur la droite de chaque tab, contient 1 entier associée à chaque tab
         self.kanjis_displayed_dico = {} # Caractères affichés sur la droite de chaque tab (numéro de frame : widget associé)
 
@@ -84,29 +84,29 @@ class App(ctk.CTk):
         Mesure un nouveau clic gauche de l'utilisateur sur le canvas
         et ajoute 1 au compteur (initialement nul) des traits tracés.
         '''
-        self.n_strokes += 1
-        self.strokes[self.n_strokes] = [] # Définis la liste à remplir pour un nouveau trait
+        self.strokes.append([])
+        self.strokes[-1] = [] # Définis la liste à remplir pour un nouveau trait
     
     def canvas_end_stroke(self, event):
         '''
         Permet d'observer le résultat du stockage des points du tracé
         ! TEMPORAIRE !
         '''
-        if self.strokes.get(self.n_strokes, "list_missing") != "list_missing" : # Evite de récupérer des points si la liste de points n'existe pas
+        if len(self.strokes) != 0 : # Evite de récupérer des points si la liste de points n'existe pas
             
-            print(f"Liste de points :\n{self.strokes[self.n_strokes]}\nNombre de points : {len(self.strokes[self.n_strokes])}")
+            print(f"Liste de points :\n{self.strokes[-1]}\nNombre de points : {len(self.strokes[-1])}")
 
     def canvas_draw_stroke(self, event):
         '''
         Appelé quand l'utilisateur maintiens le clic sur le canvas.
         Place un point noir aux coordonnées de la souris, puis ajoute les coordonées au dictionnaire des tracés.
         '''
-        if self.strokes.get(self.n_strokes, "list_missing") != "list_missing" : # Evite d'ajouter des points si la liste de points n'existe pas
+        if len(self.strokes) != 0 : # Evite d'ajouter des points si la liste de points n'existe pas
             x = event.x
             y = event.y
             cursor_pos = (x, y) # Récupère les coordonnées de la souris (relativement au 0,0 du canvas)
-            self.strokes[self.n_strokes].append(cursor_pos) # Ajoute les coordonnées à la liste de points courante
-            self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags=["user_stroke_dot", f"n_stroke_{self.n_strokes}"], width=4) # Affichage du point
+            self.strokes[-1].append(cursor_pos) # Ajoute les coordonnées à la liste de points courante
+            self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, tags=["user_stroke_dot", f"n_stroke_{len(self.strokes)}"], width=4) # Affichage du point
 
     def end_app(self, event):
         '''
@@ -118,20 +118,18 @@ class App(ctk.CTk):
         '''
         Supprime tous les points tracés par l'utilisateur (tag : user_stroke_dot) et vide le dictionnaire contenant les tracés.
         '''
-        if self.n_strokes > 0 : # Evite de supprimer inutilement
-            self.n_strokes = 0
+        if len(self.strokes) > 0 : # Evite de supprimer inutilement
+            self.strokes = []
             self.tab.main_canvas.delete("user_stroke_dot")
-            self.strokes.clear()
+            
     
     def clear_last_stroke(self, event):
         '''
         Supprime les derniers points du dernier tracé de l'utilisateur
         '''
-        int_last_stroke = self.n_strokes
-        if int_last_stroke > 0 : # Evite de supprimer inutilement et les bugs
-            self.n_strokes += -1
-            self.tab.main_canvas.delete(f"n_stroke_{int_last_stroke}")
-            self.strokes.pop(int_last_stroke)
+        if len(self.strokes) > 0 : # Evite de supprimer inutilement et les bugs 
+            self.tab.main_canvas.delete(f"n_stroke_{len(self.strokes)}")
+            self.strokes.pop()
 
     def display_boxes(self, tab):
         '''
@@ -155,7 +153,7 @@ class App(ctk.CTk):
         fetches the closest kanji to the user's drawing
         """
         # Cas du bouton pour comparer les kanjis dans la fenêtre identifier
-        client_strokes = self.controller.reduce_dotlist_size(self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
+        client_strokes = (self.controller.drawing_offset(self.strokes)) # Offsets drawing to upper-left corner, then reduces size
         found_kanjis = self.controller.identify(client_strokes) # Returns a list of kanji names (str)
         frame = self.tab.kanji_found_frame
 
@@ -201,9 +199,10 @@ class App(ctk.CTk):
         elif frame == self.tab.text_kanji_found_frame :
             display_tab = "text"
 
-        widget_and_pad_size = widget_size + padxy
+        widget_and_pad_size = widget_size + (padxy * 2)
         frame_width = frame.winfo_width()
-        n_widget_large = frame_width // widget_and_pad_size
+        # n_widget_large = frame_width // widget_and_pad_size
+        n_widget_large = 4
         column = self.n_kanjis_displayed[display_tab] % n_widget_large
         row = self.n_kanjis_displayed[display_tab] // n_widget_large
 

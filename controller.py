@@ -24,7 +24,7 @@ class Controller :
         #ici, on doit changer pour n'avoir que n_points points
 
         paths = []
-        for s in strokes.values():
+        for s in strokes:
             p_stroke = Path()
             p_stroke.points = s
             if s != []: #failsafe et opti si liste de points vide, ajoute que les listes de points non vides
@@ -50,49 +50,28 @@ class Controller :
 
         return identifier.kanjiIdentifier(kanji_2_id)   
 
-    def drawing_offset(self, dotlist : dict):
+    def drawing_offset(self, dotlist : list[list[tuple[float,float]]]):
         '''
         Finds the upper-left corner limit coordinates of user drawing and offsets all points to 'move' the drawing to the upper-left corner of canvas
         '''
         x_points = []
         y_points = []
-        offset_dotlist = {}
+        offset_dotlist = []
         if x_points != [] : # Failsafe si aucun points tracés
-            for stroke_points in dotlist.values():
+            for stroke_points in dotlist:
                 for point in stroke_points:
                     x_points.append(point[0])
                     y_points.append(point[1])
             x_min, y_min = min(x_points), min(y_points)
         
-            for stroke,points in dotlist.items():
+            for points in (dotlist):
                 offset_points = [(p[0]-x_min,p[1]-y_min) for p in points]
-                offset_dotlist[stroke] = offset_points
+                offset_dotlist.append(offset_points)
         else : 
             offset_dotlist = dotlist
     
         return offset_dotlist
         
-    def reduce_dotlist_size(self, dotlist) :
-        '''
-        Réduit le nombre de points d'une liste de points en les séparant à la distance euclidienne de d_min pixels au minimum
-        dotlist : list
-        sous la forme [(x,y),(x,y),...]
-        '''
-        d_min = self.reduction_value
-        reduced_dotlist = dotlist.copy()
-        for stroke in reduced_dotlist.keys():
-            if len(reduced_dotlist[stroke]) > 1 : # La liste doit contenir au moins 2 points
-                i = 1 # Parcours la liste en prenant le point à la position i et celui à i-1
-                while i < len(reduced_dotlist[stroke]) :
-                    x1, y1 = reduced_dotlist[stroke][i-1]
-                    x2, y2 = reduced_dotlist[stroke][i]
-                    dist = self.euclidian_distance(x1, y1, x2, y2)
-                    if dist < d_min :
-                        reduced_dotlist[stroke].pop(i)
-                    else :
-                        i += 1
-        return reduced_dotlist
-            
     def euclidian_distance(self, x1, y1, x2, y2):
         '''
         Etablit la distance euclidienne entre deux points sous la forme (x, y) selon leurs coordonnées

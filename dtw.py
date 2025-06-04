@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import fast_math
 
 from path_extended import PointExtended
 class Dtw : 
@@ -33,7 +34,7 @@ class Dtw :
         # so to have an impact, I think delta theta should be multiplied by 15 or 20
         return (math.sqrt((val_1.x-val_2.x)**2 + 
                           (val_1.y-val_2.y)**2 + 
-                          (5*(val_1.theta - val_2.theta))**2) +
+                          (8*fast_math.smallest_delta_angle(val_1.theta,val_2.theta))**2) +
                         (5 * (val_1.curvature - val_2.curvature))**2 )
     
     

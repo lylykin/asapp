@@ -24,7 +24,7 @@ class PathExtended:
 def curvature(a: tuple[float,float], b: tuple[float,float], c: tuple[float, float]): 
     l1 = ((a[0]-b[0])**2 + (a[1]-b[1])**2)
     l2 = ((b[0]-c[0])**2 + (b[1]-c[1])**2)
-    l3 = ((a[0]-c[0])**2 + (a[1] - c[1])** 2)
+    l3 = ((a[0]-c[0])**2 + (a[1] -c[1])** 2)
 
     area = 0.5 * abs(a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]))
     if area <= 0.001:
@@ -45,8 +45,6 @@ def angle(a: tuple[float, float], b: tuple[float, float]) -> float:
     """
     Calculate the angle in radians between two points a and b.
     """
-
-    
     dx = b[0] - a[0]
     dy = b[1] - a[1]
 

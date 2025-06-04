@@ -46,7 +46,7 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         for i, k in enumerate(sorted_kandict):
             print(f"{i+1} : {k}")
         
-        sorted_kandict = sorted_kandict[:20]  # Keep only the 10 closest kanjis
+        sorted_kandict = sorted_kandict[:20]  # Keep only the 20 closest kanjis
         return sorted_kandict
 
 
