@@ -73,7 +73,7 @@ def kanji_simplicity(kanji: Kanji):
 
 def dtwKanji(kanji_2_id : Kanji, kandict : dict) : 
     """
-    urmom
+    returns the dtw score of a kanji
     """
     
     res = {}

@@ -25,7 +25,7 @@ class writeTeacher() :
         incorrect_index =''
         
         for n in range(self.kanji.stroke_count) : 
-            score = Dtw().dtw(self.kanji.strokes[n], stroke_list[n])
+            score = Dtw().dtw(self.kanji.strokes.points[n], stroke_list[n])
             
             if score > correct_score : 
                 incorrect_index+= str(n)+' ,'
@@ -42,16 +42,16 @@ class writeTeacher() :
         write_stroke = [[] for _ in range (self.kanji.stroke_count)]
         step_time,s,p = 0,0,0
         
-        while step_time != time  :
+        while step_time <= time  :
             
-            if p >= len(self.kanji.strokes[s]) :
+            if p >= len(self.kanji.strokes[s].points) :
                 s +=1
                 p = 0
-                write_stroke[s].append (self.kanji.strokes[s][p])    
+                write_stroke[s].append (self.kanji.strokes[s].points[p])    
                 step_time += self.speed
                 
             else : 
-                write_stroke[s].append (self.kanji.strokes[s][p])    
+                write_stroke[s].append (self.kanji.strokes[s].points[p])    
                 step_time += self.speed    
                 p+=1
                 
@@ -61,24 +61,19 @@ class writeTeacher() :
         """
         le temps total pour l'écire est vitesse*nb points
         """
-        count = 0
-        for s in self.kanji.strokes : 
-            for p in self.kanji.strokes[s] :
-                count +=1
-        
-        return count*self.speed
+        return self.kanji.point_count()*self.speed
     
     def stroke_write_time(self, n : int) -> float:
         """
         Retourne le temps qu'il faut pour écrire le n -ième stroke
         """
         
-        if n >= len(self.kanji.stroke_count) : 
+        if n >= self.kanji.stroke_count : 
             raise IndexError(f"Erreur, le numéro du trait est trop grand : {n} (max : {len(self.kanji.stroke_count-1)})")
         
         else : 
             stroke = self.kanji.strokes[n]
-            return len(stroke)*self.speed
+            return len(stroke.points[n])*self.speed
         
         
         
