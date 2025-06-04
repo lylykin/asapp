@@ -44,4 +44,4 @@ class Dictionary() :
 #print(debugdic.get_jp_translation("voiture"))
 #print(debugdic.get_fr_translation("車"))
 #print(debugdic.translate_language("comment"))
-# C'est de la grosse merde ce dictionnaire, vraiment cette lib elle dégage               
+             

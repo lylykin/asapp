@@ -74,7 +74,7 @@ def generate_extended_path(path: Path):
             else:
                 curvature_value = curvature(points[i], points[i-1], points[i-2])
 
-        print(f"Point {i}: ({points[i][0]}, {points[i][1]}) - Curvature: {curvature_value:.4f}, Theta: {theta:.4f}")
+        #print(f"Point {i}: ({points[i][0]}, {points[i][1]}) - Curvature: {curvature_value:.4f}, Theta: {theta:.4f}")
         ex_points.append(PointExtended(points[i][0], points[i][1], curvature_value, theta))
 
     res = PathExtended()

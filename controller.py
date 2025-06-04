@@ -4,9 +4,6 @@ from svg_path import Path, simplify_path, constrain
 import opti_identifier as identifier
 from math import floor
 
-
-
-
 class Controller :
 
     def __init__(self, dico : Dictionary = Dictionary()):
@@ -20,7 +17,7 @@ class Controller :
         '''
         n_points = 9
         kanji_2_id = Kanji("Unid",strokes= [])
-        print(strokes)
+        #print(strokes)
         #ici, on doit changer pour n'avoir que n_points points
 
         paths = []
@@ -31,9 +28,7 @@ class Controller :
                 p_stroke = simplify_path(p_stroke)
                 paths.append(p_stroke)
                 
-
         constrain(paths)
-
 
         for p_stroke in paths:
             
@@ -41,12 +36,11 @@ class Controller :
 
             s = p_stroke.points
             if len(s)>n_points:
-                p_stroke.points = [s[pt] for pt in range(0, len(s), floor(len(s)/n_points))] 
-            
+                p_stroke.points = [s[pt] for pt in range(0, len(s), floor(len(s)/n_points))]     
             
             kanji_2_id.add_stroke(p_stroke) # Ajoute le trait à l'objet kanji à identifier
             # final len: 
-            print(f"Stroke {len(kanji_2_id.strokes)} : {len(p_stroke.points)} points")
+            #print(f"Stroke {len(kanji_2_id.strokes)} : {len(p_stroke.points)} points")
 
         return identifier.kanjiIdentifier(kanji_2_id)   
 

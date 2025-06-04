@@ -176,10 +176,10 @@ class Dtw :
                     window[i][j] = 1
                     
         # pretty print the window for debug
-        for i in range(len(window)):
-            for j in range(len(window[0])):
-                print(window[i][j], end=' ')
-            print()
+        #for i in range(len(window)):
+        #    for j in range(len(window[0])):
+        #        print(window[i][j], end=' ')
+        #    print()
         return window
 
     def points_align(self) :

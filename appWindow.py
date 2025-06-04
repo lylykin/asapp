@@ -25,8 +25,8 @@ class App(ctk.CTk):
         self.tab._segmented_button.configure(font=ctk.CTkFont(family="Arial", size=12, weight="bold"))
 
         self.strokes = [] # Liste stockant les traits tracés sous forme de liste de paires de points
-        self.n_kanjis_displayed = {} # Nombre de caractères affichés sur la droite de chaque tab, contient 1 entier associé à chaque tab
-        self.kanjis_displayed_dico = {} # Caractères affichés sur la droite de chaque tab (numéro de frame : widget associé)
+        self.n_kanjis_displayed = {"text": 0, "canvas": 0} # Nombre de caractères affichés sur la droite de chaque tab, contient 1 entier associé à chaque tab
+        self.kanjis_displayed_dico = {"text": {}, "canvas": {}} # Caractères affichés sur la droite de chaque tab (caractère : widget associé)
 
         self.widget_window_placement()
         self.widget_interact()
@@ -74,7 +74,6 @@ class App(ctk.CTk):
         self.tab.compare_button.bind("<Button-1>", lambda event : self.display_boxes("canvas"))
         self.tab.search_text_button.bind("<Button-1>", lambda event : self.display_boxes("text"))
         self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
-        self.appearance_switch.bind("<ButtonPress-1>", self.kanji_check_writing)
         self.tab.teacher_button.bind("<ButtonPress-1>", self.kanji_show_writing)
 
     def canvas_new_stroke(self, event):
@@ -182,22 +181,22 @@ class App(ctk.CTk):
         if found_kanjis == [''] or found_kanjis == []: # Si entrée vide ou aucun mot valide
             self.tab.entry_result_label.configure(text="Entrez du texte pour rechercher")
         else :
+            for kanji in found_kanjis:
+                if kanji not in self.kanjis_displayed_dico["text"] :
+                    self.kanji_frame_create(frame, kanji)
             self.search_dictionary(found_kanjis[0]) # Affiche les informations du premier kanji / seul kanji entré
             self.tab.entry_result_label.configure(text="")
-            for kanji in found_kanjis:
-                self.kanji_frame_create(frame, kanji)
 
     def kanji_frame_create(self, frame, kanji : str, widget_size = 40, padxy = 2) :
         '''
         Crée une frame contenant un kanji dans le widget spécifié en frame, selon la taille, l'espace et le kanji spécifié
         S'adapte à la taille du contenant frame
         '''
-        destroy = True # Définit si les kanjis affichés seront réinitialisé au clic de la kanji_frame
+        destroy = False # Définit si les kanjis affichés seront réinitialisé au clic de la kanji_frame
         if frame == self.tab.kanji_found_frame : # correspond à "canvas" ou "text" pour les kanjis affichés dans la tab identification ou dictionnaire respectivement
             display_tab = "canvas"
         elif frame == self.tab.text_kanji_found_frame :
             display_tab = "text"
-            destroy = False
 
         widget_and_pad_size = widget_size + (padxy * 2)
         frame_width = frame.winfo_width()
@@ -217,7 +216,7 @@ class App(ctk.CTk):
 
         kanji_frame.bind("<ButtonPress-1>", lambda event : self.kanji_tr_tabswitch(kanji,destroy=destroy))
         kanji_display.bind("<ButtonPress-1>", lambda event : self.kanji_tr_tabswitch(kanji,destroy=destroy))
-        self.kanjis_displayed_dico[display_tab][self.n_kanjis_displayed[display_tab]] = kanji_frame # Récupère le widget créé dans un dictionnaire
+        self.kanjis_displayed_dico[display_tab][kanji] = kanji_frame # Récupère le widget créé dans un dictionnaire
         
         self.n_kanjis_displayed[display_tab] += 1
 
@@ -227,7 +226,7 @@ class App(ctk.CTk):
         '''
         appearance_theme = self.appearance.get()
         ctk.set_appearance_mode(appearance_theme)
-        print(f"Apparence changée en {appearance_theme}")
+        #print(f"Apparence changée en {appearance_theme}")
     
     def custom_stroke_debug(self, debug_stroke) :
         '''

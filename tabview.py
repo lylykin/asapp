@@ -34,7 +34,7 @@ class TabView(ctk.CTkTabview):
 
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(master) # Stocke le canvas
-        self.kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray", width= 215, height= 375) # Stocke les kanji et kana proposés par l'app
+        self.kanji_found_frame = ctk.CTkScrollableFrame(master, fg_color="dimgray", width= 215, height= 370) # Stocke les kanji et kana proposés par l'app
         self.main_canvas = ctk.CTkCanvas(self.canvas_frame, bg="white", borderwidth=3, cursor="tcross", width=310, height=270) 
         self.compare_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Comparer le caractère")
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
@@ -111,7 +111,7 @@ class TabView(ctk.CTkTabview):
         self.t_clear_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
         self.t_correct_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
         self.teacher_button = ctk.CTkButton(self.teacher_frame, border_width=3, corner_radius=5, anchor="center", text="Apprendre à écrire le kanji :", width=125, height=20)
-        self.teacher_entry = ctk.CTkEntry(self.teacher_frame)
+        self.teacher_entry = ctk.CTkEntry(self.teacher_frame, font=(ctk.CTkFont(family="comic sans ms", size=50)))
 
         # Position des frame dans la tab
         self.teacher_frame.grid(row=0, column=1, sticky="nesw")
@@ -120,8 +120,8 @@ class TabView(ctk.CTkTabview):
         # A définir sa propre frame si nécessaire !
 
         # Position des widget dans la teacher_frame
-        self.teacher_button.grid(row = 0, column = 0, sticky = "s")
-        self.teacher_entry.grid(row = 0, column = 1, sticky = "s")
+        self.teacher_button.grid(row = 0, column = 0, sticky = "sew")
+        self.teacher_entry.grid(row = 1, column = 0, sticky = "sew")
 
         # Position des widget dans la t_canvas_frame
         self.t_main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")

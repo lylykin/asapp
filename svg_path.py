@@ -100,18 +100,18 @@ def simplify_path(path: Path) -> Path:
 
     # print svg format:
     
-    for i, point in enumerate(raw):
-        x, y = point
-        if i == 0:
-            print(f"M {x} {y}", end=" ")
-        else:
-            print(f"L {x} {y}", end=" ")
-    print("Z")  # Close the path #        print(f"Removed point {center} due to angle {abs(theta_1 - theta_2):.2f} < 0.1")
+    #for i, point in enumerate(raw):
+    #    x, y = point
+    #    if i == 0:
+    #        print(f"M {x} {y}", end=" ")
+    #    else:
+    #        print(f"L {x} {y}", end=" ")
+    #print("Z")  # Close the path #        print(f"Removed point {center} due to angle {abs(theta_1 - theta_2):.2f} < 0.1")
 
             
   #  simplified.append(raw[-1])
 
-    print("simplified path length:", len(simplified))
+    #print("simplified path length:", len(simplified))
     p = Path()
     p.points = simplified
     return p
