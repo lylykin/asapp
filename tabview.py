@@ -107,9 +107,9 @@ class TabView(ctk.CTkTabview):
         self.teacher_frame = ctk.CTkFrame(master)
         self.t_canvas_frame = ctk.CTkFrame(master)
         self.t_main_canvas = ctk.CTkCanvas(self.t_canvas_frame, bg="white", borderwidth=3, cursor="tcross", width=310, height=270) 
-        self.t_compare_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Afficher l'écriture")
-        self.t_clear_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
-        self.t_correct_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
+        #self.t_compare_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Afficher l'écriture")
+        #self.t_clear_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
+        #self.t_correct_button = ctk.CTkButton(self.t_canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
         self.teacher_button = ctk.CTkButton(self.teacher_frame, border_width=3, corner_radius=5, anchor="center", text="Apprendre à écrire le kanji :", width=125, height=20)
         self.teacher_entry = ctk.CTkEntry(self.teacher_frame, font=(ctk.CTkFont(family="comic sans ms", size=50)))
 
@@ -125,9 +125,9 @@ class TabView(ctk.CTkTabview):
 
         # Position des widget dans la t_canvas_frame
         self.t_main_canvas.grid(row=0,column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
-        self.t_compare_button.grid(row=1, column = 0, columnspan=2, padx=16, pady=5, sticky="ew") 
-        self.t_clear_button.grid(row=2, column=1, padx=4, pady=5, sticky="ew")
-        self.t_correct_button.grid(row=2,column=0,padx=4, pady=5,sticky = "ew")
+        #self.t_compare_button.grid(row=1, column = 0, columnspan=2, padx=16, pady=5, sticky="ew") 
+        #self.t_clear_button.grid(row=2, column=1, padx=4, pady=5, sticky="ew")
+        #self.t_correct_button.grid(row=2,column=0,padx=4, pady=5,sticky = "ew")
 
         # Définit la répartition globale de taille des frames pour les colonnes et lignes
         master.grid_rowconfigure(0, weight=2)

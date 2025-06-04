@@ -6,6 +6,7 @@ from kanji_teach import writeTeacher
 from dictionary import Dictionary
 from kanji import KanjiDB
 from numpy import arange
+from time import sleep
 
 class App(ctk.CTk):
     
@@ -239,7 +240,6 @@ class App(ctk.CTk):
             x *= 3
             y *= 3
             self.tab.t_main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
-            return 
         
         for i in range(len(debug_stroke) - 1) :
             x1,y1 = debug_stroke[i]
@@ -281,17 +281,15 @@ class App(ctk.CTk):
         """
         Trace, trait par trait, le kanji entier
         """
-        print("Début de l'écriture")
+        #print("Début de l'écriture")
         kanji = self.tab.teacher_entry.get()
         kanji_db = KanjiDB.the()._kanji_db
         kan = kanji_db[kanji]    
         self.teacher = writeTeacher(kanji=kan)    
         time = 0
         n = 0
-        
+        self.tab.t_main_canvas.delete("all")
         while True : 
-            #si le canvas a qqchose affiché
-                #le clear
             time += 1
             
             write_strokes = self.teacher.teacher_time(time)
@@ -310,8 +308,9 @@ class App(ctk.CTk):
                      
                 self.custom_stroke_debug(stroke)
                 
-                print(f"écriture du trait {n}")
+                #print(f"écriture du trait {n}")
             self.update()
+            sleep(1)
             n+=1
             
         
