@@ -242,7 +242,7 @@ class App(ctk.CTk):
         Appelée lorsque l'utilisateur appuie sur le bouton de recherche de caractères,
         recherche parmis les kanjis existant ou dans le dictionnaire les informations à afficher
         """
-        to_search = self.tab.text_box.get()
+        to_search = self.tab.text_box.get('1.0')
         if self.tab.last_search != to_search:
             self.tab.last_search = to_search
             kanji_name, lang = self.dictionary.translate_language(to_search)
