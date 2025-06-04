@@ -41,7 +41,7 @@ class KanjiDB(object):
 
     def _update_stroke_db(self):
         for v in self._kanji_db.values():
-            print(v)
+            #print(v)
             l = self._kanji_stroke_db.get(v.stroke_count, [])
             l.append(v)
 

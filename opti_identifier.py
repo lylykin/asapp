@@ -30,22 +30,9 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         print("Error : no matches found")
         return []
     else :
-
-
         # sort in a list by the value and return a list of key sorted
-
-        for k,v in (kandict.items()):
-            print(f"kanji {k.name} : {v}")
         sorted_kandict = sorted(kandict.copy().items(), key=operator.itemgetter(1))
- 
         sorted_kandict = [k[0].name for k in sorted_kandict]
-       # dump 
-       # for i in range(len(sorted_kandict)):
-        #     print(f"{i+1} : {sorted_kandict[i]}  ({kandict[sorted_kandict[i]]})")
-        print("Sorted kandict :")
-        for i, k in enumerate(sorted_kandict):
-            print(f"{i+1} : {k}")
-        
         sorted_kandict = sorted_kandict[:20]  # Keep only the 20 closest kanjis
         return sorted_kandict
 
@@ -90,12 +77,12 @@ def dtwKanji(kanji_2_id : Kanji, kandict : dict) :
     
     for kan in keys:
         somme = 0
-        print(kan.name)
+        #print(kan.name)
         
         for i in range (stroke_number) : 
             somme += dtwStroke(opti_stroke[i], generate_extended_path(kan.strokes[i]), last_max_v)
             #si le score dépasse déjà la valeur min, ne sert à rien de la calculer, le score sera trop grand
-        print(f"Score for {kan.name} : {somme}")
+        #print(f"Score for {kan.name} : {somme}")
         if len(res.keys()) < 20:
             res[kan] = somme
         else: 
