@@ -50,12 +50,7 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
         return sorted_kandict
 
 
-def lerp(va, vb, factor):
-    """
-    Lerp function from vA when factor is 0 and vB when factor is 1 
-    it smoothly blend between the two value. 
-    """
-    return (1-factor) * va + factor * vb
+
     
 def dtwStroke(stroke : PathExtended,comp_stroke : PathExtended, ceiling: float) -> float:
     """

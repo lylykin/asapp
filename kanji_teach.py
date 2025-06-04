@@ -9,12 +9,19 @@ class writeTeacher() :
     kanji : Kanji
     speed : float
     
-    def __init__(self, kanji : Kanji, speed = 0.5):
+    def __init__(self, kanji : Kanji, speed = 1.0):
         """
         kanji est le kanji cliqué/ entré par l'user
         """
         self.speed = speed
         self.kanji = kanji
+    
+    def lerp(self, point_a : tuple[float, float], point_b : tuple[float, float], factor):
+        """
+        Lerp function from vA when factor is 0 and vB when factor is 1 
+        it smoothly blend between the two value. 
+        """
+        return ((1-factor) * point_a[0] + factor * point_b[0],(1-factor) * point_a[1] + factor * point_b[1])
     
     def write_teacher(self, stroke_list : list) : 
         """
@@ -46,22 +53,32 @@ class writeTeacher() :
             
             if p >= len(self.kanji.strokes[s].points) :
                 s +=1
+                
+                if s>= self.kanji.stroke_count: 
+                    return None
+                
                 p = 0
-                write_stroke[s].append (self.kanji.strokes[s].points[p])    
+                write_stroke[s].append (self.kanji.strokes[s].points[p]) 
+                #print(f'write_stroke : {write_stroke}')   
                 step_time += self.speed
                 
             else : 
-                write_stroke[s].append (self.kanji.strokes[s].points[p])    
+                write_stroke[s].append (self.kanji.strokes[s].points[p])  
+              #  print(f'write_stroke : {write_stroke}')                   
                 step_time += self.speed    
                 p+=1
-                
-        return write_stroke
+            
+        
+        return [elt for elt in write_stroke if elt != []]
     
     def total_write_time(self):
         """
         le temps total pour l'écire est vitesse*nb points
         """
-        return self.kanji.point_count()*self.speed
+        time = 0
+        for i in range(len(self.kanji.strokes)) : 
+            time += self.stroke_write_time(i)
+        return time
     
     def stroke_write_time(self, n : int) -> float:
         """
@@ -73,7 +90,7 @@ class writeTeacher() :
         
         else : 
             stroke = self.kanji.strokes[n]
-            return len(stroke.points[n])*self.speed
+            return len(stroke.points)*self.speed
         
         
         

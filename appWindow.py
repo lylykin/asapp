@@ -5,6 +5,7 @@ from controller import Controller
 from kanji_teach import writeTeacher
 from dictionary import Dictionary
 from kanji import KanjiDB
+from numpy import arange
 
 class App(ctk.CTk):
     
@@ -234,8 +235,25 @@ class App(ctk.CTk):
         DEBUG
         Crée un trait par défaut pour une liste de points
         '''
-        for x,y in debug_stroke :
-            self.tab.main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
+        
+        
+        if len(debug_stroke) == 1:
+            x,y = debug_stroke[0]
+            x *= 3
+            y *= 3
+            self.tab.t_main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
+            return 
+        
+        for i in range(len(debug_stroke) - 1) :
+            x1,y1 = debug_stroke[i]
+            x2,y2 = debug_stroke[i+1]
+            
+            x1 *= 3
+            y1 *= 3
+            x2 *= 3
+            y2 *= 3
+            self.tab.t_main_canvas.create_line(x1,y1,x2,y2, width=4)
+           # self.tab.t_main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
     
     def search_dictionary(self, to_search=None):
         """
@@ -270,7 +288,7 @@ class App(ctk.CTk):
         """
         Trace, trait par trait, le kanji entier
         """
-        
+        print("Début de l'écriture")
         kanji = self.tab.teacher_entry.get()
         kanji_db = KanjiDB.the()._kanji_db
         kan = kanji_db[kanji]    
@@ -278,12 +296,29 @@ class App(ctk.CTk):
         time = 0
         n = 0
         
-        while time < self.teacher.total_write_time() : 
+        while True : 
             #si le canvas a qqchose affiché
                 #le clear
-            time += self.teacher.stroke_write_time(n)
-            self.custom_stroke_debug(self.teacher.teacher_time(kan.strokes))
-            #ensuite l'afficher sur un canvas, mais la je sèche
+            time += 1
+            
+            write_strokes = self.teacher.teacher_time(time)
+            
+            if write_strokes is None : 
+                break
+            
+            for s in write_strokes : 
+                
+                stroke = [s[0]]
+                #interpolation linéaire pour augmenter le nombre de points
+                for i in range (len(s)-1) : 
+                    
+                    for fac in arange(0.1,1,0.2) :
+                        stroke.append(self.teacher.lerp(s[i], s[i+1], fac))
+                     
+                self.custom_stroke_debug(stroke)
+                
+                print(f"écriture du trait {n}")
+            self.update()
             n+=1
             
         
