@@ -76,7 +76,7 @@ class App(ctk.CTk):
         self.tab.search_text_button.bind("<Button-1>", lambda event : self.display_boxes("text"))
         self.appearance_switch.bind("<ButtonPress-1>", self.switch_appearance)
         self.appearance_switch.bind("<ButtonPress-1>", self.kanji_check_writing)
-        self.tab.teacher_button.bind("<ButtonPress-1>", self.kanji_check_writing)
+        self.tab.teacher_button.bind("<ButtonPress-1>", self.kanji_show_writing)
 
     def canvas_new_stroke(self, event):
         '''
@@ -290,7 +290,7 @@ class App(ctk.CTk):
         vérifie que le kanji écrit par l'utilisateur est correctement fait, et dans l'ordre
         """
         #récupérer la série de points créée sur le canvas
-        
+
         return self.teacher.write_teacher(None)
             
         

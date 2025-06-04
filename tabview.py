@@ -40,13 +40,13 @@ class TabView(ctk.CTkTabview):
         self.clear_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Effacer")
         self.correct_button = ctk.CTkButton(self.canvas_frame, border_width=3, corner_radius=5, anchor="center", text="Corriger")
         self.n_found_label = ctk.CTkLabel(self.kanji_found_frame, text="")
-        self.teacher_frame = ctk.CTkFrame(master)
+        #self.teacher_frame = ctk.CTkFrame(master)
         #self.teacher_button = ctk.CTkButton(self.teacher_frame, border_width=3, corner_radius=5, anchor="center", text="Apprendre à écrire le kanji", width=125, height=20)
         #self.teacher_entry = ctk.CTkEntry(self.teacher_frame)
 
         # Position des frame dans la tab
         self.canvas_frame.grid(row=0,column=0, sticky="nsew")
-        self.teacher_frame.grid(row=1, column=0, sticky="esw")
+        #self.teacher_frame.grid(row=1, column=0, sticky="esw")
         self.kanji_found_frame.grid(row=0,column=1, rowspan=2, sticky="nsew")
 
         # Position des widget dans la teacher_frame
