@@ -27,7 +27,7 @@ ASAPP is a japanese character identification tool that uses a DTW algorithm to i
 ```py
 $ pip install svg.path
 $ pip install customtkinter
-$ pip install PIL
+$ pip install pillow
 $ pip install numpy
 $ pip install googletrans
 $ pip install matplotlib
