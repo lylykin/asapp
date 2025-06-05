@@ -1,5 +1,4 @@
 import customtkinter as ctk
-from PIL import Image   
     
 class TabView(ctk.CTkTabview):
     def __init__(self, master, tab_name_list, controller, **kwargs):
@@ -26,11 +25,6 @@ class TabView(ctk.CTkTabview):
         '''
         Définis les différents widget à placer dans la fenêtre de la tab canvas
         '''
-        # Définition et position de la frame centrale contenant la tab
-        #self.center_frame_compare_canvas = ctk.CTkFrame(master)
-        #self.center_frame_compare_canvas.grid(row=0,column=0, padx=10, pady=10, sticky="nsew")
-        #self.center_frame_compare_canvas.grid_rowconfigure(0, weight=1)
-        #self.center_frame_compare_canvas.grid_propagate(True)
 
         # Définitions des Widget
         self.canvas_frame = ctk.CTkFrame(master) # Stocke le canvas
@@ -73,7 +67,7 @@ class TabView(ctk.CTkTabview):
         self.search_text_button = ctk.CTkButton(self.text_frame, border_width=3, corner_radius=5, anchor="center", text="Chercher les caractères")
         self.desc_frame = ctk.CTkFrame(master, fg_color="dimgray", width= 540, height= 165) # Changer à une couleur dynamique réactive au thème
         self.kanji_name_label = ctk.CTkLabel(self.desc_frame, text="", font=(ctk.CTkFont(family="comic sans ms", weight="bold", size=20)))
-        #self.desc_label = ctk.CTkLabel(self.desc_frame, text="")
+
         self.entry_result_label = ctk.CTkLabel(self.text_kanji_found_frame, text="")
         
         # Position des frame dans la tab
@@ -86,8 +80,7 @@ class TabView(ctk.CTkTabview):
         self.search_text_button.grid(row=1, column = 0, columnspan=2, padx=16, pady=5, sticky="ew")
 
         # Position des widget dans la desc_frame
-        self.kanji_name_label.grid(row=0, column = 0, padx=15, pady=5, sticky="ew") 
-        #self.desc_label.grid(row=1, column = 0, padx=15, pady=5, sticky="ew") 
+        self.kanji_name_label.grid(row=0, column = 0, padx=15, pady=5, sticky="ew")  
 
         # Position des widget dans la text_kanji_found_frame
         self.entry_result_label.grid(row=0,column=0, sticky='nsew')

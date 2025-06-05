@@ -9,31 +9,35 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     returns the closest kanjis according to dtw, compares kanji_2_id and the kanjis in the file
     Parameters : kanji_2_id (kanji) and kanji_file (json file) treated like an singleton (containing all the possible kanjis to compare)
     """
-    if kanji_2_id == Kanji("Unid",strokes= []) : # Test pour éviter de comparer un kanji vide
+    
+    # Test pour éviter de comparer un kanji vide
+    if kanji_2_id == Kanji("Unid",strokes= []) : 
         "Error : no matches found"
-        return [] # Kanji vide, aucun résultat
+        return []
     
     kandict = {}
     stroke_count = kanji_2_id.stroke_count
     
-    for kan in kanji_file._kanji_db.values() : # For each kanjis objects of the file   
+    for kan in kanji_file._kanji_db.values() : 
         # first checking the number of strokes to avoid useless calculus. 
         # Adds the characters which have the same amount of strokes as kanji_2_id
         if stroke_count == kan.stroke_count:
             kandict[kan] = 0
             
-    # n-ième trait à comparer avec le dtw
+    # Comparer le trait n du kanji_2_id au trait n de tous les kanji de kandict (même nombre de trait)
     n = 0 
-    kandict = dtwKanji(kanji_2_id, kandict) # Comparer le trait n du kanji_2_id au trait n de tous les kanji de kandict (même nombre de trait)
+    kandict = dtwKanji(kanji_2_id, kandict) 
         
     if len(kandict.keys()) == 0 : 
         print("Error : no matches found")
         return []
+    
     else :
         # sort in a list by the value and return a list of key sorted
         sorted_kandict = sorted(kandict.copy().items(), key=operator.itemgetter(1))
         sorted_kandict = [k[0].name for k in sorted_kandict]
-        sorted_kandict = sorted_kandict[:20]  # Keep only the 20 closest kanjis
+        # Keep only the 20 closest kanjis
+        sorted_kandict = sorted_kandict[:20]  
         return sorted_kandict
 
 
@@ -41,7 +45,7 @@ def kanjiIdentifier(kanji_2_id : Kanji, kanji_file =KanjiDB.the()):
     
 def dtwStroke(stroke : PathExtended,comp_stroke : PathExtended, ceiling: float) -> float:
     """
-    returns the dtw score between 2 strokes
+    retourne le score dtw entre 2 strokes
     """        
     return Dtw(stroke.points_ex, comp_stroke.points_ex).dtw(ceiling)
 
@@ -62,10 +66,7 @@ def dtwKanji(kanji_2_id : Kanji, kandict : dict) :
     # sort the keys by point count
     
     keys = list(kandict.keys())
-    keys.sort(key=kanji_simplicity)  # sort by point count
-
-    # sort the keys by point count
-    # sort key by point count
+    keys.sort(key=kanji_simplicity)  
     stroke_number = kanji_2_id.stroke_count
     
     opti_stroke = []

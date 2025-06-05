@@ -1,9 +1,6 @@
-#le but de ce fichier est de permettre à l'user d'apprendre à écrire un kanji voulu.
 from kanji import Kanji
 from dtw import Dtw
 
-
-#bon, en vrai plutot à mettre dans la partie appwindow directement, n'a pas de sens comme ca
 
 class writeTeacher() : 
     kanji : Kanji
@@ -12,6 +9,7 @@ class writeTeacher() :
     def __init__(self, kanji : Kanji, speed = 1.0):
         """
         kanji est le kanji cliqué/ entré par l'user
+        speed : vitesse d'écriture
         """
         self.speed = speed
         self.kanji = kanji
@@ -25,15 +23,20 @@ class writeTeacher() :
     
     def write_teacher(self, stroke_list : list) : 
         """
+        Attention, méthode non implémentée.
+        Vérifie que les traits donnés en entrée on été correctement écrits
         """
-        #pour l'instant est aléatoire, à voir les ordres de grandeur des traits, mais en gros si est vraiment pas correct,
-        #c'est que c'est pas le bon trait ou pas dans le bon sens
+        
+        # Valeur palier. Si le score est au-dessus, cela veut dire que le trait est mal écrit/ que ce n'eeest pas le bon trait
+        #la valeur du palier est arbitraire car la fonction n'est pas utilisée. 
         correct_score = 100
         incorrect_index =''
         
+        #calcul du score DTW pour chaque trait
         for n in range(self.kanji.stroke_count) : 
             score = Dtw().dtw(self.kanji.strokes.points[n], stroke_list[n])
             
+            #ajout dans la liste des traits incorrectement écrits
             if score > correct_score : 
                 incorrect_index+= str(n)+' ,'
 
@@ -45,12 +48,13 @@ class writeTeacher() :
     def teacher_time(self, time) : 
         """retourne la partie du kanji qui doit être écrite en fonction du temps écoulé"""
 
-        
+        #initialisation
         write_stroke = [[] for _ in range (self.kanji.stroke_count)]
         step_time,s,p = 0,0,0
         
         while step_time <= time  :
             
+            #cas où on arrive à la fin d'un trait et doit papsser au suivant
             if p >= len(self.kanji.strokes[s].points) :
                 s +=1
                 
@@ -59,21 +63,19 @@ class writeTeacher() :
                 
                 p = 0
                 write_stroke[s].append (self.kanji.strokes[s].points[p]) 
-                #print(f'write_stroke : {write_stroke}')   
                 step_time += self.speed
                 
             else : 
-                write_stroke[s].append (self.kanji.strokes[s].points[p])  
-              #  print(f'write_stroke : {write_stroke}')                   
+                write_stroke[s].append (self.kanji.strokes[s].points[p])                    
                 step_time += self.speed    
                 p+=1
             
-        
+        #suppression des éléments vides non utilisés, créés lors de l'initialisation
         return [elt for elt in write_stroke if elt != []]
     
     def total_write_time(self):
         """
-        le temps total pour l'écire est vitesse*nb points
+        retourne le temps nécessaire pour écrire 1 caractère entier
         """
         time = 0
         for i in range(len(self.kanji.strokes)) : 
@@ -84,7 +86,7 @@ class writeTeacher() :
         """
         Retourne le temps qu'il faut pour écrire le n -ième stroke
         """
-        
+        #erreur-proofing
         if n >= self.kanji.stroke_count : 
             raise IndexError(f"Erreur, le numéro du trait est trop grand : {n} (max : {len(self.kanji.stroke_count-1)})")
         

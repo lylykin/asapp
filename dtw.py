@@ -55,22 +55,6 @@ class Dtw :
                     mat[i][j] = self.euclidian_dist(self.serie_Y[i], self.serie_X[j])
         
         self.cm = mat
-    
-    def compute_acc_cost_matrix(self): 
-        """
-        Compute the accumulation cost matrix.
-        """ 
-        n = len(self.cm)
-        m = len(self.cm[0])
-        
-        #building the acm matrix
-
-        c_mat = np.zeros((n, m))
-        for i in range(n):
-            for j in range(m):
-                c_mat[i][j] = self.coef_acc_cost_matrix(i, j)
-
-        self.acm = c_mat
 
     def fast_compute_acc_cost_matrix(self, ceiling): 
         """
@@ -79,49 +63,31 @@ class Dtw :
         n = len(self.cm)
         m = len(self.cm[0])
 
-        #creation de la fenetre de recherche
-        
-
-        # self.window = self.create_window(len(self.serie_Y), len(self.serie_X))
-
-        #building the acm matrix
+        #building the acm matrix. We only need its last element : the min cost
         c_mat = np.zeros((n, m))
         c_mat[-1][-1] = self.fast_coef_acc_cost_matrix(n-1, m-1, ceiling)
 
         self.acm = c_mat
-
-
-    #def coef_acc_cost_matrix(self, i, j) : #might have a high cost, we'll see if that's an issue or not
-    #    #we set the distance to the 1st point as infinite
-    #    i = max(i, 0)
-    #    j = max(j, 0)
-    #    #the distance here is the same as the euclidian distance
-    #    if i ==0 and j == 0:
-    #        return self.cm[i][j]
-    #    
-    #    elif i == 0 or j == 0:
-    #        return math.inf
-    #    
-    #    #the distance here is the euclidian distance with the smallest distance from its neighbours in the C matrix
-    #    else :
-    #        return self.cm[i][j] + min(self.CoefAccCostMatrix(i-1, j), self.CoefAccCostMatrix(i, j-1), self.CoefAccCostMatrix(i-1, j-1))
-
     
     def fast_coef_acc_cost_matrix(self, i, j, ceiling):
         """"
         returns the coefs of the accumulation cost matrix
         """
         
+        #cas initial : le premier point ets à une distance de 0
         if i == 0 and j == 0 :
             return self.cm[i][j]
         
+        #cas initial : le score est à l'infini sur les bords
         elif i == 0 or j == 0:
             return math.inf
         
+        #cas initial : le point recherché n'est pas dans la fenêtre de recherche
         elif self.window[i][j] == 0 : 
             return math.inf
     
         else : 
+            #si on dépasse un certain score, on considère que le dtw ne passera pas par ce point
             if self.cm[i][j] > ceiling:
                return math.inf
             
@@ -130,10 +96,10 @@ class Dtw :
 
     def dtw(self, ceiling):
         """
-        returns the dtw score for two series
+        Retourne le score dtw enntre 2 séries
         """
-        #pour gérer le cas ou on applique le dtw ou le cas ou on applique le fastdtw.
-        #bon j'ai pas implémenté le fast donc useless mdr
+        # try except pour gérer le cas ou on applique le dtw ou le cas ou on applique le fastdtw.
+        #finalement un peu inutile car on a pas eu besoin d'implémenter le fast
         try :
             return self.acm[-1][-1]
         except :            
@@ -141,22 +107,14 @@ class Dtw :
             self.compute_cost_matrix()
             self.fast_compute_acc_cost_matrix(ceiling)         
             return self.acm[-1][-1]
-        
-    #def update_window(self, window, update_value) : 
-    #    """
-    #    implémentation factice, sera à revoir. window_value correspond aux valeurs qui sont dans le radius.
-    #    la fenetre a pour valeur 1 si on parcoure, 0 sinon
-    #    """
-    #    
-    #    #cas ou la fen est upgraded de base. on a pas rétrécissement
-    #    for r in range(update_value) : 
-    #        for c in range(update_value[r]): 
-    #            window[r][c] = 1
                 
 
     def create_window(self, col : int, row : int, radius = 5):
         """
-        returns a search window depending of a radius
+        retourne une fenêtre de recherche, soit une diagonale de 1.
+        Si le coefficient est 1 : la valeur associée dans la matrice de cout est dans la fenêtre
+        Si le coefficient est 0 : on est hors de la fenêtre de recherche et le score ne sera pas calculé
+        radius : largeur de la diagonale
         row : le nombre d'éléments dans une ligne
         col : le nombre de lignes (quand on regarde les colonnes)
         """
@@ -164,7 +122,8 @@ class Dtw :
         window = [[0 for j in range(row)] for i in range(col)]
         
         if col <= 1 or row <= 1 :
-            return [[1 for j in range(row)] for i in range(col)]    
+            return [[1 for j in range(row)] for i in range(col)]  
+          
         #creation de la diagonale
         for i in range(col) : 
             
@@ -174,12 +133,7 @@ class Dtw :
                 #(avec un facteur pour résoudre le pb de ratio/sizing de la fen)
                 if abs(i*(row/col)-j) <= radius :
                     window[i][j] = 1
-                    
-        # pretty print the window for debug
-        #for i in range(len(window)):
-        #    for j in range(len(window[0])):
-        #        print(window[i][j], end=' ')
-        #    print()
+    
         return window
 
     def points_align(self) :
@@ -188,30 +142,20 @@ class Dtw :
         Edits the serie_Y attribute when called
         """
         
-        #not very necessary ik, but makes it more readable
+        #récupération des premiers points pour la lisibilité
         X_first = self.serie_X[0]
         Y_first = self.serie_Y[0]
         
-        #calculating the distance between the 2 points
+        #calcul de la distance entre 2 points
         off_x = X_first[0]-Y_first[0]
         off_y = Y_first[1]-Y_first[1]
         
-        #offset application to align the first two points of the series
+        #application de l'offset pour aligner les 2 séries
         res = []
         for elt in range(len(self.serie_X)) :                 
             res.append((self.serie_X[elt][0]-off_x, self.serie_X[elt][1]-off_y))
         self.serie_X = res
                 
-            
-#  for now useless, but wont be if we need the fast  
-#def reduce_by_half(serie : list) :  
-#    """
-#    returns half of the points of a serie
-#    """  
-#    return [serie[pt] for pt in range(0, len(serie), 2)]
-    
-
-
 """      
 d = Dtw([(1,0),(3,2),(4,4)],[(0,1),(2,4),(4,4)])
 d.CostMatrix()

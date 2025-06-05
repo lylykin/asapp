@@ -228,29 +228,27 @@ class App(ctk.CTk):
         ctk.set_appearance_mode(appearance_theme)
         #print(f"Apparence changée en {appearance_theme}")
     
-    def custom_stroke_debug(self, debug_stroke) :
+    def custom_stroke(self, debug_stroke) :
         '''
-        DEBUG
         Crée un trait par défaut pour une liste de points
         '''
         
         
         if len(debug_stroke) == 1:
             x,y = debug_stroke[0]
-            x *= 3
-            y *= 3
+            x *= 2.5
+            y *= 2.5
             self.tab.t_main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
         
         for i in range(len(debug_stroke) - 1) :
             x1,y1 = debug_stroke[i]
             x2,y2 = debug_stroke[i+1]
             
-            x1 *= 3
-            y1 *= 3
-            x2 *= 3
-            y2 *= 3
+            x1 *= 2.5
+            y1 *= 2.5
+            x2 *= 2.5
+            y2 *= 2.5
             self.tab.t_main_canvas.create_line(x1,y1,x2,y2, width=4)
-           # self.tab.t_main_canvas.create_oval(x-1, y-1, x+1, y+1, width=4)
     
     def search_dictionary(self, to_search=None):
         """
@@ -281,7 +279,7 @@ class App(ctk.CTk):
         """
         Trace, trait par trait, le kanji entier
         """
-        #print("Début de l'écriture")
+        #récupération du caractère saisi et création d'un objet kanji
         kanji = self.tab.teacher_entry.get()
         kanji_db = KanjiDB.the()._kanji_db
         kan = kanji_db[kanji]    
@@ -289,6 +287,7 @@ class App(ctk.CTk):
         time = 0
         n = 0
         self.tab.t_main_canvas.delete("all")
+        
         while True : 
             time += 1
             
@@ -306,16 +305,18 @@ class App(ctk.CTk):
                     for fac in arange(0.1,1,0.2) :
                         stroke.append(self.teacher.lerp(s[i], s[i+1], fac))
                      
-                self.custom_stroke_debug(stroke)
+                self.custom_stroke(stroke)
+                self.strokes.append(stroke)
                 
-                #print(f"écriture du trait {n}")
+
             self.update()
-            sleep(1)
+            sleep(0.1)
             n+=1
             
         
     def kanji_check_writing(self, event) : 
         """
+        Attention : non implémentée.
         vérifie que le kanji écrit par l'utilisateur est correctement fait, et dans l'ordre
         """
         #récupérer la série de points créée sur le canvas
