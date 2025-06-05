@@ -280,38 +280,43 @@ class App(ctk.CTk):
         Trace, trait par trait, le kanji entier
         """
         #récupération du caractère saisi et création d'un objet kanji
-        kanji = self.tab.teacher_entry.get()
+        kanji = list(self.tab.teacher_entry.get())
+        if kanji != []:
+            kanji = kanji[0] # Prise en compte que du premier caractère entré
+        else :
+            kanji = None
         kanji_db = KanjiDB.the()._kanji_db
-        kan = kanji_db[kanji]    
-        self.teacher = writeTeacher(kanji=kan)    
-        time = 0
-        n = 0
-        self.tab.t_main_canvas.delete("all")
-        
-        while True : 
-            time += 1
-            
-            write_strokes = self.teacher.teacher_time(time)
-            
-            if write_strokes is None : 
-                break
-            
-            for s in write_strokes : 
-                
-                stroke = [s[0]]
-                #interpolation linéaire pour augmenter le nombre de points
-                for i in range (len(s)-1) : 
-                    
-                    for fac in arange(0.1,1,0.2) :
-                        stroke.append(self.teacher.lerp(s[i], s[i+1], fac))
-                     
-                self.custom_stroke(stroke)
-                self.strokes.append(stroke)
-                
+        kan = kanji_db.get(kanji)    
+        if kan is not None :
+            self.teacher = writeTeacher(kanji=kan)    
+            time = 0
+            n = 0
+            self.tab.t_main_canvas.delete("all")
 
-            self.update()
-            sleep(0.1)
-            n+=1
+            while True : 
+                time += 1
+
+                write_strokes = self.teacher.teacher_time(time)
+
+                if write_strokes is None : 
+                    break
+                
+                for s in write_strokes : 
+
+                    stroke = [s[0]]
+                    #interpolation linéaire pour augmenter le nombre de points
+                    for i in range (len(s)-1) : 
+
+                        for fac in arange(0.1,1,0.2) :
+                            stroke.append(self.teacher.lerp(s[i], s[i+1], fac))
+
+                    self.custom_stroke(stroke)
+                    self.strokes.append(stroke)
+
+
+                self.update()
+                sleep(0.1)
+                n+=1
             
         
     def kanji_check_writing(self, event) : 
